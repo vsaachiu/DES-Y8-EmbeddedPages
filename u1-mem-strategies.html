@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Helpers Catalogue</title>
+    <!-- Tailwind CSS CDN for easy styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter for a clean, modern look -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease-in-out; /* Smooth transition for compact mode changes */
+        }
+        /* Custom scrollbar for a cleaner look */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1; /* Tailwind gray-300 */
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a0aec0; /* Tailwind gray-400 */
+        }
+
+        /* Base styles for tool card paragraphs (always hidden in compact mode) */
+        .tool-card p {
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+            max-height: 150px; /* Max height when visible */
+            opacity: 1;
+            overflow: hidden;
+        }
+
+        /* Styles for compact mode */
+        body.is-compact .tool-card p {
+            max-height: 0; /* Hide content by collapsing height */
+            opacity: 0;
+            display: none; /* Ensure it's completely hidden for screen readers and layout */
+        }
+
+        body.is-compact .tool-card {
+            padding: 0.75rem; /* Smaller padding in compact mode */
+        }
+
+        body.is-compact .tool-card h3 {
+            display: flex; /* Use flexbox for inline emoji and text */
+            align-items: center; /* Vertically center emoji and text */
+            text-align: left; /* Ensure text is left-aligned */
+            font-size: 1.25rem; /* Smaller heading in compact mode (text-xl equivalent) */
+            margin-bottom: 0; /* No bottom margin on heading in compact mode */
+            width: 100%; /* Ensure h3 takes full width for left alignment */
+        }
+
+        body.is-compact .tool-card .emoji {
+            font-size: 1.5rem; /* Make emojis smaller in compact mode */
+            line-height: 1; /* Adjust line height to further compact */
+            margin-right: 0.5rem; /* Space between emoji and text */
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen p-4 sm:p-8 text-gray-800">
+
+    <div class="max-w-7xl mx-auto bg-white rounded-3xl shadow-2xl p-6 sm:p-10 lg:p-12 border-4 border-blue-200 relative">
+
+        <header class="text-center mb-10">
+            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-blue-700 mb-4 leading-tight">
+                Your Memory Helpers <span class="block text-indigo-600">Mind Tools & Hand Tools</span>
+            </h1>
+            <p class="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto">
+                Discover clever strategies inside your brain and useful physical objects to boost your memory!
+            </p>
+        </header>
+
+        <!-- Toggle Button - Positioned top-right -->
+        <div class="absolute top-4 right-4 sm:top-6 sm:right-6">
+            <button id="toggleViewBtn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full shadow-lg text-sm sm:text-base transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-300">
+                Toggle Compact View
+            </button>
+        </div>
+
+        <section class="mb-12">
+            <h2 class="text-3xl sm:text-4xl font-bold text-indigo-600 mb-8 text-center flex items-center justify-center gap-3">
+                <span class="text-5xl sm:text-6xl">✋</span> Hand Tools
+                <span class="text-xl text-gray-500 hidden sm:inline-block">(What You Use to Help Your Brain)</span>
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Hand Tool Card: Alarms & Reminders (H1) -->
+                <div class="bg-indigo-50 rounded-2xl shadow-lg p-6 flex flex-col items-center text-center transform hover:scale-105 transition-transform duration-300 border-2 border-indigo-100 tool-card cursor-pointer">
+                    <h3 class="text-2xl font-semibold text-indigo-800 mb-2"><span class="emoji">⏰</span> H1: Alarms & Reminders</h3>
+                    <p class="text-gray-700">Using a clock, phone, or other device to alert you at a specific time (e.g., for chores, medicines).</p>
+                </div>
+
+                <!-- Hand Tool Card: Books & Libraries (H2) -->
+                <div class="bg-indigo-50 rounded-2xl shadow-lg p-6 flex flex-col items-center text-center transform hover:scale-105 transition-transform duration-300 border-2 border-indigo-100 tool-card cursor-pointer">
+                    <h3 class="text-2xl font-semibold text-indigo-800 mb-2"><span class="emoji">📚</span> H2: Books & Libraries</h3>
+                    <p class="text-gray-700">Buildings and collections storing vast amounts of information for people to access across generations.</p>
+                </div>
+
+                <!-- Hand Tool Card: Calendars & Planners (H3) -->
+                <div class="bg-indigo-50 rounded-2xl shadow-lg p-6 flex flex-col items-center text-center transform hover:scale-105 transition-transform duration-300 border-2 border-indigo-100 tool-card cursor-pointer">
+                    <h3 class="text-2xl font-semibold text-indigo-800 mb-2"><span class="emoji">🗓️</span> H3: Calendars & Planners</h3>
+                    <p class="text-gray-700">Physical or digital tools to mark dates for events, birthdays, appointments, and homework deadlines.</p>
+                </div>
+
+                <!-- Hand Tool Card: Filing Systems & Folders (H4) -->
+                <div class="bg-indigo-50 rounded-2xl shadow-lg p-6 flex flex-col items-center text-center transform hover:scale-105 transition-transform duration-300 border-2 border-indigo-100 tool-card cursor-pointer">
+                    <h3 class="text-2xl font-semibold text-indigo-800 mb-2"><span class="emoji">🗃️</span> H4: Filing Systems</h3>
+                    <p class="text-gray-700">Organizing papers and documents in a logical way so you can easily find them later.</p>
+                </div>
+
+                <!-- Hand Tool Card: Lists & Checklists (H5) -->
+                <div class="bg-indigo-50 rounded-2xl shadow-lg p-6 flex flex-col items-center text-center transform hover:scale-105 transition-transform duration-300 border-2 border-indigo-100 tool-card cursor-pointer">
+                    <h3 class="text-2xl font-semibold text-indigo-800 mb-2"><span class="emoji">📝</span> H5: Lists & Checklists</h3>
+                    <p class="text-gray-700">Writing down things you need to do or get, so you don't forget steps or items.</p>
+                </div>
+
+                <!-- Hand Tool Card: Maps (H6) -->
+                <div class="bg-indigo-50 rounded-2xl shadow-lg p-6 flex flex-col items-center text-center transform hover:scale-105 transition-transform duration-300 border-2 border-indigo-100 tool-card cursor-pointer">
+                    <h3 class="text-2xl font-semibold text-indigo-800 mb-2"><span class="emoji">🗺️</span> H6: Maps</h3>
+                    <p class="text-gray-700">To remember locations, directions, and how to get from one place to another.</p>
+                </div>
+
+                <!-- Hand Tool Card: Museums & Monuments (H7) -->
+                <div class="bg-indigo-50 rounded-2xl shadow-lg p-6 flex flex-col items-center text-center transform hover:scale-105 transition-transform duration-300 border-2 border-indigo-100 tool-card cursor-pointer">
+                    <h3 class="text-2xl font-semibold text-indigo-800 mb-2"><span class="emoji">🏛️</span> H7: Museums & Monuments</h3>
+                    <p class="text-gray-700">Public places built to help entire communities remember important history, events, or people.</p>
+                </div>
+
+                <!-- Hand Tool Card: Notebooks & Journals (H8) -->
+                <div class="bg-indigo-50 rounded-2xl shadow-lg p-6 flex flex-col items-center text-center transform hover:scale-105 transition-transform duration-300 border-2 border-indigo-100 tool-card cursor-pointer">
+                    <h3 class="text-2xl font-semibold text-indigo-800 mb-2"><span class="emoji">📓</span> H8: Notebooks & Journals</h3>
+                    <p class="text-gray-700">Places to write down notes, thoughts, ideas, and plans. The act of writing itself can help you remember!</p>
+                </div>
+
+                <!-- Hand Tool Card: Photos & Videos (H9) -->
+                <div class="bg-indigo-50 rounded-2xl shadow-lg p-6 flex flex-col items-center text-center transform hover:scale-105 transition-transform duration-300 border-2 border-indigo-100 tool-card cursor-pointer">
+                    <h3 class="text-2xl font-semibold text-indigo-800 mb-2"><span class="emoji">📸</span> H9: Photos & Videos</h3>
+                    <p class="text-gray-700">Capturing images or moments to help you remember events, people, or places.</p>
+                </div>
+
+                <!-- Hand Tool Card: Physical Objects as Triggers (H10) -->
+                <div class="bg-indigo-50 rounded-2xl shadow-lg p-6 flex flex-col items-center text-center transform hover:scale-105 transition-transform duration-300 border-2 border-indigo-100 tool-card cursor-pointer">
+                    <h3 class="text-2xl font-semibold text-indigo-800 mb-2"><span class="emoji">🎗️</span> H10: Physical Triggers</h3>
+                    <p class="text-gray-700">Using a simple object, like a knot in a string or a special keepsake, to trigger a memory.</p>
+                </div>
+
+                <!-- Hand Tool Card: Sticky Notes (H11) -->
+                <div class="bg-indigo-50 rounded-2xl shadow-lg p-6 flex flex-col items-center text-center transform hover:scale-105 transition-transform duration-300 border-2 border-indigo-100 tool-card cursor-pointer">
+                    <h3 class="text-2xl font-semibold text-indigo-800 mb-2"><span class="emoji">🏷️</span> H11: Sticky Notes</h3>
+                    <p class="text-gray-700">Small pieces of paper you can stick in visible places as quick visual reminders.</p>
+                </div>
+
+                <!-- Hand Tool Card: Tallies & Knots (Historical) (H12) -->
+                <div class="bg-indigo-50 rounded-2xl shadow-lg p-6 flex flex-col items-center text-center transform hover:scale-105 transition-transform duration-300 border-2 border-indigo-100 tool-card cursor-pointer">
+                    <h3 class="text-2xl font-semibold text-indigo-800 mb-2"><span class="emoji">🪵</span> H12: Tallies & Knots</h3>
+                    <p class="text-gray-700">Simple marks or knots used historically to count things or keep track of agreements.</p>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="text-3xl sm:text-4xl font-bold text-blue-600 mb-8 text-center flex items-center justify-center gap-3">
+                <span class="text-5xl sm:text-6xl">🧠</span> Mind Tools
+                <span class="text-xl text-gray-500 hidden sm:inline-block">(What Your Brain Does)</span>
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Mind Tool Card: Acronyms & Acrostics (M1) -->
+                <div class="bg-blue-50 rounded-2xl shadow-lg p-6 flex flex-col items-center text-center transform hover:scale-105 transition-transform duration-300 border-2 border-blue-100 tool-card cursor-pointer">
+                    <h3 class="text-2xl font-semibold text-blue-800 mb-2"><span class="emoji">🅰️</span> M1: Acronyms & Acrostics</h3>
+                    <p class="text-gray-700">Using the first letter of words to create a new word (ROY G BIV) or a funny sentence (My Very Eager Mother...).</p>
+                </div>
+
+                <!-- Mind Tool Card: Association (M2) -->
+                <div class="bg-blue-50 rounded-2xl shadow-lg p-6 flex flex-col items-center text-center transform hover:scale-105 transition-transform duration-300 border-2 border-blue-100 tool-card cursor-pointer">
+                    <h3 class="text-2xl font-semibold text-blue-800 mb-2"><span class="emoji">🔗</span> M2: Association</h3>
+                    <p class="text-gray-700">Linking new information to something you already know, like a new name to a familiar face.</p>
+                </div>
+
+                <!-- Mind Tool Card: Chunking (M3) -->
+                <div class="bg-blue-50 rounded-2xl shadow-lg p-6 flex flex-col items-center text-center transform hover:scale-105 transition-transform duration-300 border-2 border-blue-100 tool-card cursor-pointer">
+                    <h3 class="text-2xl font-semibold text-blue-800 mb-2"><span class="emoji">📦</span> M3: Chunking</h3>
+                    <p class="text-gray-700">Breaking down long information (like a big number or list) into smaller, more manageable groups.</p>
+                </div>
+
+                <!-- Mind Tool Card: Memory Palace (M4) -->
+                <div class="bg-blue-50 rounded-2xl shadow-lg p-6 flex flex-col items-center text-center transform hover:scale-105 transition-transform duration-300 border-2 border-blue-100 tool-card cursor-pointer">
+                    <h3 class="text-2xl font-semibold text-blue-800 mb-2"><span class="emoji">🏰</span> M4: Memory Palace</h3>
+                    <p class="text-gray-700">Imagining a familiar place and mentally placing items you need to remember in different spots within it.</p>
+                </div>
+
+                <!-- Mind Tool Card: Repeating Things (M5) -->
+                <div class="bg-blue-50 rounded-2xl shadow-lg p-6 flex flex-col items-center text-center transform hover:scale-105 transition-transform duration-300 border-2 border-blue-100 tool-card cursor-pointer">
+                    <h3 class="text-2xl font-semibold text-blue-800 mb-2"><span class="emoji">🔁</span> M5: Repeating Things</h3>
+                    <p class="text-gray-700">Just saying something over and over to yourself until it sticks, like a phone number or a short list.</p>
+                </div>
+
+                <!-- Mind Tool Card: Songs & Rhymes (M6) -->
+                <div class="bg-blue-50 rounded-2xl shadow-lg p-6 flex flex-col items-center text-center transform hover:scale-105 transition-transform duration-300 border-2 border-blue-100 tool-card cursor-pointer">
+                    <h3 class="text-2xl font-semibold text-blue-800 mb-2"><span class="emoji">🎶</span> M6: Songs & Rhymes</h3>
+                    <p class="text-gray-700">Turning information into a catchy tune or a rhyming phrase, like the alphabet song or a silly poem.</p>
+                </div>
+
+                <!-- Mind Tool Card: Storytelling (M7) -->
+                <div class="bg-blue-50 rounded-2xl shadow-lg p-6 flex flex-col items-center text-center transform hover:scale-105 transition-transform duration-300 border-2 border-blue-100 tool-card cursor-pointer">
+                    <h3 class="text-2xl font-semibold text-blue-800 mb-2"><span class="emoji">📖</span> M7: Storytelling</h3>
+                    <p class="text-gray-700">Weaving facts into an interesting or funny story to make them easier for your brain to hold onto.</p>
+                </div>
+
+                <!-- Mind Tool Card: Visualization (M8) -->
+                <div class="bg-blue-50 rounded-2xl shadow-lg p-6 flex flex-col items-center text-center transform hover:scale-105 transition-transform duration-300 border-2 border-blue-100 tool-card cursor-pointer">
+                    <h3 class="text-2xl font-semibold text-blue-800 mb-2"><span class="emoji">👁️</span> M8: Visualization</h3>
+                    <p class="text-gray-700">Creating vivid mental images of what you need to remember. The funnier or weirder the image, the better!</p>
+                </div>
+            </div>
+        </section>
+
+        <footer class="text-center mt-12 text-gray-500 text-sm">
+            <p>Ready to design your own memory helper?</p>
+        </footer>
+    </div>
+
+    <script>
+        // Get the button and the body element
+        const toggleButton = document.getElementById('toggleViewBtn');
+        const body = document.body;
+
+        // Function to toggle compact mode for the entire body
+        function toggleCompactMode() {
+            body.classList.toggle('is-compact');
+            if (body.classList.contains('is-compact')) {
+                toggleButton.textContent = 'Show Details';
+            } else {
+                toggleButton.textContent = 'Toggle Compact View';
+            }
+        }
+
+        // Add event listener to the main toggle button
+        toggleButton.addEventListener('click', toggleCompactMode);
+
+        // Get all tool cards
+        const toolCards = document.querySelectorAll('.tool-card');
+
+        // Add click listener to each tool card for individual paragraph toggling
+        toolCards.forEach(card => {
+            card.addEventListener('click', function() {
+                const paragraph = this.querySelector('p');
+                // Only toggle if in compact mode and the paragraph exists
+                if (body.classList.contains('is-compact') && paragraph) {
+                    // Check if the paragraph is currently hidden via 'display: none' from .is-compact
+                    // If it is, force show it. If it's visible, hide it.
+                    if (paragraph.style.display === 'none' || paragraph.style.maxHeight === '0px') {
+                        paragraph.style.display = 'block'; // Make it block to calculate height
+                        paragraph.style.maxHeight = paragraph.scrollHeight + 'px'; // Set to actual height
+                        paragraph.style.opacity = '1';
+                    } else {
+                        paragraph.style.maxHeight = '0';
+                        paragraph.style.opacity = '0';
+                        // Add a small delay before setting display: none to allow transition
+                        setTimeout(() => {
+                            paragraph.style.display = 'none';
+                        }, 300); // Must match transition duration
+                    }
+                }
+            });
+        });
+
+        // Initialize display for compact mode if it was applied via a stored preference (optional)
+        // For this example, it starts in expanded mode by default.
+    </script>
+
+</body>
+</html>
