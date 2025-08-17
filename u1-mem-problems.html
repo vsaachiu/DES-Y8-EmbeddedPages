@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Problem Brainstorm</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Harmony (Soft blues, indigos, and warm grays) -->
+    <!-- Application Structure Plan: A dynamic grid of "problem" cards, representing memory challenges. Clicking a problem card expands it to reveal relevant "Mind Tool" and "Hand Tool" solution cards within its expanded area. This non-linear, explorative structure mimics a brainstorm, allowing users to intuitively navigate problems and discover their solutions without strict sequential flow, prioritizing user choice and synthesis. -->
+    <!-- Visualization & Content Choices: Report Info: Lists of memory problems and memory tools, associated by category. Goal: Allow users to explore common memory challenges and find corresponding solutions interactively. Viz/Presentation: Problem cards (main interactive elements) trigger the display of nested solution cards. Tool cards within the expanded problem view are distinct, categorized, and concise. Interaction: Clickable problem cards toggle visibility of tool details. Justification: This design leverages visual discovery and direct interaction, making the abstract concepts of memory problems and tools tangible and immediately applicable to a middle school context. Library/Method: Vanilla JS for dynamic content creation and event handling. Unicode emojis for visual cues. CONFIRMATION: NO SVG/Mermaid used. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* Tailwind slate-50 */
+        }
+        .card-shadow {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* Soft shadow for floating effect */
+        }
+        .problem-card {
+            background-color: #ffffff; /* White background */
+            border: 1px solid #e2e8f0; /* Tailwind slate-200 */
+            transition: all 0.3s ease-in-out;
+            transform: translateY(0);
+        }
+        .problem-card:hover {
+            transform: translateY(-5px); /* Slight lift on hover */
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .tool-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out;
+        }
+        .tool-content.expanded {
+            max-height: 500px; /* Arbitrary max-height for smooth transition */
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a0aec0;
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-8">
+
+    <div class="max-w-7xl mx-auto relative">
+        <header class="text-center mb-10">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-3">Memory Problem Brainstorm</h1>
+            <p class="text-lg text-slate-600 max-w-3xl mx-auto">Click on any memory challenge to reveal useful Mind Tools 🧠 and Hand Tools ✋ that can help you overcome it!</p>
+        </header>
+
+        <!-- Single Toggle Button: Expand All / Contract All -->
+        <div class="absolute top-4 right-4 flex gap-2">
+            <button id="toggleAllBtn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full shadow-lg text-sm transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-300">
+                Expand All
+            </button>
+        </div>
+
+        <div id="problem-cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <!-- Problem cards will be dynamically inserted here -->
+        </div>
+
+    </div>
+
+    <script>
+        const data = {
+            tools: {
+                m1: { name: "Repeating Things", type: "mind", emoji: "🔁", description: "Saying something over and over till it sticks." },
+                m2: { name: "Songs & Rhymes", type: "mind", emoji: "🎶", description: "Turning info into a catchy tune or rhyme." },
+                m3: { name: "Acronyms & Acrostics", type: "mind", emoji: "🅰️", description: "Making a word (ROY G BIV) or sentence from first letters." },
+                m4: { name: "Visualization", type: "mind", emoji: "👁️", description: "Creating vivid mental images of info." },
+                m5: { name: "Memory Palace", type: "mind", emoji: "🏰", description: "Mentally placing items in a familiar location." },
+                m6: { name: "Chunking", type: "mind", emoji: "📦", description: "Breaking info into smaller, manageable groups." },
+                m7: { name: "Storytelling", type: "mind", emoji: "📖", description: "Weaving facts into an interesting story." },
+                m8: { name: "Association", type: "mind", emoji: "🔗", description: "Linking new info to something you already know." },
+                h1: { name: "Calendars & Planners", type: "hand", emoji: "🗓️", description: "Tools for marking dates, appointments, deadlines." },
+                h2: { name: "Notebooks & Journals", type: "hand", emoji: "📓", description: "Writing down notes, thoughts, and plans." },
+                h3: { name: "Lists & Checklists", type: "hand", emoji: "📝", description: "Writing down tasks or items to get." },
+                h4: { name: "Alarms & Reminders", type: "hand", emoji: "⏰", description: "Devices that alert you at specific times." },
+                h5: { name: "Sticky Notes", type: "hand", emoji: "🏷️", description: "Small papers for quick visual reminders." },
+                h6: { name: "Maps", type: "hand", emoji: "🗺️", description: "Tools to remember locations and directions." },
+                h7: { name: "Photos & Videos", type: "hand", emoji: "📸", description: "Capturing images/moments to remember events." },
+                h8: { name: "Physical Triggers", type: "hand", emoji: "🎗️", description: "Objects (e.g., knot in string) to trigger memory." },
+                h9: { name: "Filing Systems", type: "hand", emoji: "🗃️", description: "Organizing documents for easy retrieval." }
+            },
+            problems: [
+                { id: "p1", text: "Class Timetable", category: "academic", tools: ["h1", "h2", "h5"] },
+                { id: "p2", text: "Books to Bring", category: "academic", tools: ["h3", "h5", "h2"] },
+                { id: "p3", text: "Locker Combinations", category: "academic", tools: ["m1", "h8", "h2"] },
+                { id: "p4", text: "Homework Due Dates", category: "academic", tools: ["h1", "h3", "h5"] },
+                { id: "p5", text: "Turn in Homework", category: "academic", tools: ["h1", "h5", "h8"] },
+                { id: "p6", text: "Study for a Test", category: "academic", tools: ["h1", "h3"] },
+                { id: "p7", text: "History Dates & Names", category: "academic", tools: ["m3", "m7", "h2"] },
+                { id: "p8", text: "Scientific Vocabulary", category: "academic", tools: ["m1", "m4", "h2"] },
+                { id: "p9", text: "Foreign Language List", category: "academic", tools: ["m1", "m2", "h2"] },
+                { id: "p10", text: "Complex Formulas", category: "academic", tools: ["m1", "m2", "h2"] },
+                { id: "p11", text: "Lines for School Play", category: "academic", tools: ["m1", "m7", "h2"] },
+                { id: "p12", text: "Password", category: "academic", tools: ["h2", "h8", "m3"] },
+                { id: "p13", text: "Friends' Birthdays", category: "personal", tools: ["h1", "h4"] },
+                { id: "p14", text: "Text a Friend Back", category: "personal", tools: ["h4", "h5"] },
+                { id: "p15", text: "Names of New People", category: "personal", tools: ["m8", "m1"] },
+                { id: "p16", text: "Charge Your Phone", category: "personal", tools: ["h4", "h8"] },
+                { id: "p17", text: "Do Chores", category: "personal", tools: ["h1", "h3", "h4"] },
+                { id: "p18", text: "Pack Sports Gear", category: "personal", tools: ["h3", "h1", "h8"] },
+                { id: "p19", text: "Keys/Phone Location", category: "personal", tools: ["h8"] },
+                { id: "p20", text: "Feed a Pet", category: "personal", tools: ["h4", "h3"] },
+                { id: "p21", text: "Take Medicine", category: "personal", tools: ["h4", "h1"] },
+                { id: "p22", text: "Special Memory", category: "personal", tools: ["h2", "h7"] }
+            ]
+        };
+
+        const problemsContainer = document.getElementById('problem-cards-container');
+        const toggleAllBtn = document.getElementById('toggleAllBtn');
+
+        let allExpanded = false; // Track the current state of all cards
+
+        function renderProblemCards() {
+            problemsContainer.innerHTML = '';
+            data.problems.forEach(problem => {
+                const card = document.createElement('div');
+                card.className = `problem-card p-6 rounded-2xl cursor-pointer card-shadow relative`;
+
+                let tagColorClass = '';
+                if (problem.category === 'academic') {
+                    tagColorClass = 'bg-blue-100 text-blue-700'; // Lighter background, darker text
+                } else if (problem.category === 'personal') {
+                    tagColorClass = 'bg-pink-100 text-pink-700'; // Lighter background, darker text
+                }
+
+                card.innerHTML = `
+                    <div class="absolute top-3 right-3 px-1.5 py-0.5 rounded-full text-xs font-medium ${tagColorClass} uppercase">
+                        ${problem.category}
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-2">${problem.text}</h3>
+                    <div class="tool-content">
+                        <div class="mb-4">
+                            <h4 class="text-lg font-semibold text-blue-600 mb-2">🧠 Mind Tools</h4>
+                            <div class="grid grid-cols-1 gap-2" id="mind-tools-${problem.id}"></div>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-semibold text-indigo-600 mb-2">✋ Hand Tools</h4>
+                            <div class="grid grid-cols-1 gap-2" id="hand-tools-${problem.id}"></div>
+                        </div>
+                    </div>
+                `;
+                problemsContainer.appendChild(card);
+
+                const toolContentDiv = card.querySelector('.tool-content');
+                const mindToolsGrid = card.querySelector(`#mind-tools-${problem.id}`);
+                const handToolsGrid = card.querySelector(`#hand-tools-${problem.id}`);
+
+                const associatedMindTools = problem.tools.map(tid => data.tools[tid]).filter(t => t.type === 'mind');
+                const associatedHandTools = problem.tools.map(tid => data.tools[tid]).filter(t => t.type === 'hand');
+
+                associatedMindTools.forEach(tool => {
+                    mindToolsGrid.innerHTML += `
+                        <div class="bg-blue-100 p-3 rounded-lg flex items-center gap-2">
+                            <span class="text-xl">${tool.emoji}</span>
+                            <div>
+                                <p class="font-semibold text-blue-800">${tool.name}</p>
+                                <p class="text-xs text-blue-700">${tool.description}</p>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                associatedHandTools.forEach(tool => {
+                    handToolsGrid.innerHTML += `
+                        <div class="bg-indigo-100 p-3 rounded-lg flex items-center gap-2">
+                            <span class="text-xl">${tool.emoji}</span>
+                            <div>
+                                <p class="font-semibold text-indigo-800">${tool.name}</p>
+                                <p class="text-xs text-indigo-700">${tool.description}</p>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                card.addEventListener('click', () => {
+                    toolContentDiv.classList.toggle('expanded');
+                    // If a card is manually toggled, the 'all expanded' state might change,
+                    // but we won't try to force it to align with the toggleAllBtn's state here
+                    // as individual toggling takes precedence for that specific card.
+                });
+            });
+        }
+
+        function toggleAllCards(expand) {
+            const toolContentDivs = document.querySelectorAll('.tool-content');
+            toolContentDivs.forEach(div => {
+                if (expand) {
+                    div.classList.add('expanded');
+                } else {
+                    div.classList.remove('expanded');
+                }
+            });
+            allExpanded = expand; // Update the global state
+            updateToggleButtonText();
+        }
+
+        function updateToggleButtonText() {
+            if (allExpanded) {
+                toggleAllBtn.textContent = 'Contract All';
+                toggleAllBtn.classList.remove('bg-blue-500', 'hover:bg-blue-600', 'focus:ring-blue-300');
+                toggleAllBtn.classList.add('bg-red-500', 'hover:bg-red-600', 'focus:ring-red-300');
+            } else {
+                toggleAllBtn.textContent = 'Expand All';
+                toggleAllBtn.classList.remove('bg-red-500', 'hover:bg-red-600', 'focus:ring-red-300');
+                toggleAllBtn.classList.add('bg-blue-500', 'hover:bg-blue-600', 'focus:ring-blue-300');
+            }
+        }
+
+        toggleAllBtn.addEventListener('click', () => {
+            toggleAllCards(!allExpanded); // Toggle the state
+        });
+
+        renderProblemCards();
+        updateToggleButtonText(); // Set initial button text
+    </script>
+</body>
+</html>
