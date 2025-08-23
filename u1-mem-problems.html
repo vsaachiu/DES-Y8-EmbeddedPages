@@ -34,7 +34,8 @@
             transition: max-height 0.5s ease-out;
         }
         .tool-content.expanded {
-            max-height: 500px; /* Arbitrary max-height for smooth transition */
+            max-height: 600px; /* Increased max-height for more content */
+            overflow-y: auto; /* Add scrolling when content exceeds max-height */
         }
         /* Custom scrollbar */
         ::-webkit-scrollbar {
@@ -52,6 +53,94 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #a0aec0;
         }
+        
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 0;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            animation: slideIn 0.3s ease-out;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+        
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+            position: sticky;
+            top: 0;
+            background: white;
+            border-radius: 20px 20px 0 0;
+            z-index: 10;
+        }
+        
+        .modal-body {
+            padding: 1.5rem;
+        }
+        
+        .close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            background: none;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .close:hover,
+        .close:focus {
+            color: #000;
+            background-color: #f1f5f9;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideIn {
+            from { 
+                opacity: 0; 
+                transform: translateY(-50px) scale(0.95); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0) scale(1); 
+            }
+        }
     </style>
 </head>
 <body class="p-4 sm:p-8">
@@ -64,15 +153,12 @@
 
         <!-- Control Buttons -->
         <div class="absolute top-4 right-4 flex gap-2">
-            <button id="levelFilter" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-full shadow-lg text-sm transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-green-300">
-                Show: All Levels
-            </button>
             <button id="toggleAllBtn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full shadow-lg text-sm transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-300">
                 Expand All
             </button>
         </div>
 
-        <div id="problem-cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div id="problem-cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <!-- Problem cards will be dynamically inserted here -->
         </div>
 
@@ -101,6 +187,19 @@
                 </div>
             </div>
         </section>
+
+        <!-- Modal for expanded card view -->
+        <div id="cardModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button class="close" id="closeModal">&times;</button>
+                    <div id="modalHeader"></div>
+                </div>
+                <div class="modal-body" id="modalBody">
+                    <!-- Modal content will be inserted here -->
+                </div>
+            </div>
+        </div>
 
     </div>
 
@@ -155,7 +254,7 @@
                     name: "Memory Palace", 
                     type: "mind", 
                     emoji: "🏰", 
-                    description: "Put shopping list items around your bedroom: milk on pillow, bread on desk.",
+                    description: "Put your class schedule around your bedroom: Math on your desk, Science by the window, English on your dresser.",
                     levels: {
                         beginner: "Use your bedroom for 5-10 items",
                         intermediate: "Use your whole house for 20+ items",
@@ -166,7 +265,7 @@
                     name: "Chunking", 
                     type: "mind", 
                     emoji: "📦", 
-                    description: "Phone numbers: 555-123-4567 instead of 5551234567. Vocab in groups of 5.",
+                    description: "Group books by day: 'Monday Math English' instead of trying to remember 15 individual subjects.",
                     levels: {
                         beginner: "Break long numbers into 3-4 digit groups",
                         intermediate: "Group related concepts together",
@@ -177,7 +276,7 @@
                     name: "Storytelling", 
                     type: "mind", 
                     emoji: "📖", 
-                    description: "Make the Revolutionary War into a story about angry teenagers vs strict parents.",
+                    description: "Turn your locker combo 15-23-8 into 'I was 15, got 23 presents, ate 8 slices of cake.'",
                     levels: {
                         beginner: "Create simple cause-and-effect stories",
                         intermediate: "Add characters and emotions",
@@ -188,7 +287,7 @@
                     name: "Association", 
                     type: "mind", 
                     emoji: "🔗", 
-                    description: "Remember 'Victoria' by thinking Queen Victoria, or link mitochondria to phone battery.",
+                    description: "Link 'Victoria' to Queen Victoria, or connect your phone charger to brushing teeth.",
                     levels: {
                         beginner: "Find obvious connections (name similarities)",
                         intermediate: "Create personal, meaningful links",
@@ -206,51 +305,145 @@
                 h9: { name: "Filing Systems", type: "hand", emoji: "🗃️", description: "Cloud storage folders organized by subject, with consistent naming conventions." }
             },
             problems: [
-                { id: "p1", text: "Class Timetable", category: "academic", tools: ["h1", "h2", "h5"], hmw: "How might we create a visual system that makes schedule changes instantly obvious?" },
-                { id: "p2", text: "Books to Bring", category: "academic", tools: ["h3", "h5", "h2"], hmw: "How might we connect each subject to a memorable visual or physical cue?" },
-                { id: "p3", text: "Locker Combinations", category: "academic", tools: ["m1", "h8", "h2"], hmw: "How might we transform numbers into something more meaningful and memorable?" },
-                { id: "p4", text: "Homework Due Dates", category: "academic", tools: ["h1", "h3", "h5"], hmw: "How might we make deadlines feel urgent without causing stress?" },
-                { id: "p5", text: "Turn in Homework", category: "academic", tools: ["h1", "h5", "h8"], hmw: "How might we create a routine that makes submission automatic?" },
-                { id: "p6", text: "Study for a Test", category: "academic", tools: ["h1", "h3"], hmw: "How might we break study sessions into motivating, manageable chunks?" },
-                { id: "p7", text: "History Dates & Names", category: "academic", tools: ["m3", "m7", "h2"], hmw: "How might we connect historical events to things students already care about?" },
-                { id: "p8", text: "Scientific Vocabulary", category: "academic", tools: ["m1", "m4", "h2"], hmw: "How might we make scientific terms feel like familiar friends rather than strangers?" },
-                { id: "p9", text: "Foreign Language List", category: "academic", tools: ["m1", "m2", "h2"], hmw: "How might we immerse ourselves in the language throughout the day?" },
-                { id: "p10", text: "Complex Formulas", category: "academic", tools: ["m1", "m2", "h2"], hmw: "How might we turn abstract math into concrete, visual experiences?" },
-                { id: "p11", text: "Lines for School Play", category: "academic", tools: ["m1", "m7", "h2"], hmw: "How might we embody the character so completely that lines feel natural?" },
-                { id: "p12", text: "Password", category: "academic", tools: ["h2", "h8", "m3"], hmw: "How might we create passwords that are both secure and unforgettable?" },
-                { id: "p13", text: "Friends' Birthdays", category: "personal", tools: ["h1", "h4"], hmw: "How might we show friends we care without relying on social media reminders?" },
-                { id: "p14", text: "Text a Friend Back", category: "personal", tools: ["h4", "h5"], hmw: "How might we respond thoughtfully without seeming rude or forgetful?" },
-                { id: "p15", text: "Names of New People", category: "personal", tools: ["m8", "m1"], hmw: "How might we make name-learning feel natural rather than awkward?" },
-                { id: "p16", text: "Charge Your Phone", category: "personal", tools: ["h4", "h8"], hmw: "How might we build charging into our natural daily rhythm?" },
-                { id: "p17", text: "Do Chores", category: "personal", tools: ["h1", "h3", "h4"], hmw: "How might we make household tasks feel rewarding rather than burdensome?" },
-                { id: "p18", text: "Pack Sports Gear", category: "personal", tools: ["h3", "h1", "h8"], hmw: "How might we prepare for activities while half-asleep or rushed?" },
-                { id: "p19", text: "Keys/Phone Location", category: "personal", tools: ["h8"], hmw: "How might we create designated homes for important items?" },
-                { id: "p20", text: "Feed a Pet", category: "personal", tools: ["h4", "h3"], hmw: "How might we ensure our pets are cared for even when routines change?" },
-                { id: "p21", text: "Take Medicine", category: "personal", tools: ["h4", "h1"], hmw: "How might we make health routines consistent and safe?" },
-                { id: "p22", text: "Special Memory", category: "personal", tools: ["h2", "h7"], hmw: "How might we preserve meaningful moments in ways that bring joy later?" }
+                { id: "p1", text: "Class Timetable", category: "academic", tools: ["h1", "h2", "h5", "m5", "m2"], hmw: "How might we create a visual system that makes schedule changes instantly obvious?" },
+                { id: "p2", text: "Books to Bring", category: "academic", tools: ["h3", "h5", "h2", "m6", "m8"], hmw: "How might we connect each subject to a memorable visual or physical cue?" },
+                { id: "p3", text: "Locker Combinations", category: "academic", tools: ["m1", "h8", "h2", "m2", "m7"], hmw: "How might we transform numbers into something more meaningful and memorable?" },
+                { id: "p4", text: "Homework Due Dates", category: "academic", tools: ["h1", "h3", "h5", "m8", "m6"], hmw: "How might we make deadlines feel urgent without causing stress?" },
+                { id: "p5", text: "Turn in Homework", category: "academic", tools: ["h1", "h5", "h8", "m1"], hmw: "How might we create a routine that makes submission automatic?" },
+                { id: "p6", text: "Study for a Test", category: "academic", tools: ["h1", "h3", "m6", "m5"], hmw: "How might we break study sessions into motivating, manageable chunks?" },
+                { id: "p7", text: "History Dates & Names", category: "academic", tools: ["m3", "m7", "h2", "m2", "m6"], hmw: "How might we connect historical events to things students already care about?" },
+                { id: "p8", text: "Scientific Vocabulary", category: "academic", tools: ["m1", "m4", "h2", "m2", "m7"], hmw: "How might we make scientific terms feel like familiar friends rather than strangers?" },
+                { id: "p9", text: "Foreign Language List", category: "academic", tools: ["m1", "m2", "h2", "m6", "m8"], hmw: "How might we immerse ourselves in the language throughout the day?" },
+                { id: "p10", text: "Complex Formulas", category: "academic", tools: ["m1", "m2", "h2", "m8", "m7"], hmw: "How might we turn abstract math into concrete, visual experiences?" },
+                { id: "p11", text: "Lines for School Play", category: "academic", tools: ["m1", "m7", "h2", "m4", "m6"], hmw: "How might we embody the character so completely that lines feel natural?" },
+                { id: "p12", text: "Password", category: "academic", tools: ["h2", "h8", "m3", "m7", "m2"], hmw: "How might we create passwords that are both secure and unforgettable?" },
+                { id: "p13", text: "Friends' Birthdays", category: "personal", tools: ["h1", "h4", "m2", "m8"], hmw: "How might we show friends we care without relying on social media reminders?" },
+                { id: "p14", text: "Text a Friend Back", category: "personal", tools: ["h4", "h5", "h8", "m8"], hmw: "How might we respond thoughtfully without seeming rude or forgetful?" },
+                { id: "p15", text: "Names of New People", category: "personal", tools: ["m8", "m1", "m2", "m7"], hmw: "How might we make name-learning feel natural rather than awkward?" },
+                { id: "p16", text: "Charge Your Phone", category: "personal", tools: ["h4", "h8", "m8", "m2"], hmw: "How might we build charging into our natural daily rhythm?" },
+                { id: "p17", text: "Do Chores", category: "personal", tools: ["h1", "h3", "h4", "m6", "m8"], hmw: "How might we make household tasks feel rewarding rather than burdensome?" },
+                { id: "p18", text: "Pack Sports Gear", category: "personal", tools: ["h3", "h1", "h8", "m6", "m5"], hmw: "How might we prepare for activities while half-asleep or rushed?" },
+                { id: "p19", text: "Keys/Phone Location", category: "personal", tools: ["h8", "m5", "m8"], hmw: "How might we create designated homes for important items?" },
+                { id: "p20", text: "Feed a Pet", category: "personal", tools: ["h4", "h3", "m2", "m8"], hmw: "How might we ensure our pets are cared for even when routines change?" },
+                { id: "p21", text: "Take Medicine", category: "personal", tools: ["h4", "h1", "h8", "m2"], hmw: "How might we make health routines consistent and safe?" },
+                { id: "p22", text: "Special Memory", category: "personal", tools: ["h2", "h7", "m8", "m7"], hmw: "How might we preserve meaningful moments in ways that bring joy later?" }
             ]
         };
 
         const problemsContainer = document.getElementById('problem-cards-container');
         const toggleAllBtn = document.getElementById('toggleAllBtn');
-        const levelFilter = document.getElementById('levelFilter');
+        const modal = document.getElementById('cardModal');
+        const modalHeader = document.getElementById('modalHeader');
+        const modalBody = document.getElementById('modalBody');
+        const closeModal = document.getElementById('closeModal');
 
         let allExpanded = false; // Track the current state of all cards
-        let currentLevelFilter = 'all'; // Track level filter state
 
-        // Global function for toggling levels
-        window.toggleLevels = function(button) {
-            const levelsContent = button.parentElement.parentElement.querySelector('.levels-content');
-            if (levelsContent.classList.contains('hidden')) {
-                levelsContent.classList.remove('hidden');
-                button.textContent = 'Hide';
-                button.classList.add('bg-blue-300');
-            } else {
-                levelsContent.classList.add('hidden');
-                button.textContent = 'Levels';
-                button.classList.remove('bg-blue-300');
+        // Modal functions
+        function openModal(problem) {
+            const tagColorClass = problem.category === 'academic' ? 'bg-blue-100 text-blue-700' : 'bg-pink-100 text-pink-700';
+            
+            modalHeader.innerHTML = `
+                <div class="flex items-start justify-between">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-3 mb-2">
+                            <h2 class="text-2xl font-bold text-slate-800">${problem.text}</h2>
+                            <span class="px-2 py-1 rounded-full text-xs font-medium ${tagColorClass} uppercase">
+                                ${problem.category}
+                            </span>
+                        </div>
+                        <div class="p-3 bg-yellow-50 border-l-4 border-yellow-400 rounded">
+                            <h4 class="text-sm font-semibold text-yellow-800 mb-1">🤔 Design Challenge</h4>
+                            <p class="text-sm text-yellow-700 italic">${problem.hmw}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            const associatedMindTools = problem.tools.map(tid => data.tools[tid]).filter(t => t.type === 'mind');
+            const associatedHandTools = problem.tools.map(tid => data.tools[tid]).filter(t => t.type === 'hand');
+            
+            let mindToolsHTML = '';
+            associatedMindTools.forEach(tool => {
+                mindToolsHTML += `
+                    <div class="bg-blue-100 p-4 rounded-lg mb-3">
+                        <div class="flex items-center gap-3 mb-3">
+                            <span class="text-2xl">${tool.emoji}</span>
+                            <div class="flex-1">
+                                <p class="font-semibold text-blue-800 text-lg">${tool.name}</p>
+                                <p class="text-sm text-blue-700">${tool.description}</p>
+                            </div>
+                        </div>
+                        ${tool.levels ? `
+                        <div class="mt-3 space-y-2">
+                            <div class="bg-green-50 p-3 rounded text-sm border-l-2 border-green-400">
+                                <strong class="text-green-700">Beginner:</strong> <span class="text-green-600">${tool.levels.beginner}</span>
+                            </div>
+                            <div class="bg-yellow-50 p-3 rounded text-sm border-l-2 border-yellow-400">
+                                <strong class="text-yellow-700">Intermediate:</strong> <span class="text-yellow-600">${tool.levels.intermediate}</span>
+                            </div>
+                            <div class="bg-red-50 p-3 rounded text-sm border-l-2 border-red-400">
+                                <strong class="text-red-700">Advanced:</strong> <span class="text-red-600">${tool.levels.advanced}</span>
+                            </div>
+                        </div>
+                        ` : ''}
+                    </div>
+                `;
+            });
+            
+            let handToolsHTML = '';
+            associatedHandTools.forEach(tool => {
+                handToolsHTML += `
+                    <div class="bg-indigo-100 p-4 rounded-lg mb-3 flex items-center gap-3">
+                        <span class="text-2xl">${tool.emoji}</span>
+                        <div>
+                            <p class="font-semibold text-indigo-800 text-lg">${tool.name}</p>
+                            <p class="text-sm text-indigo-700">${tool.description}</p>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            modalBody.innerHTML = `
+                <div class="space-y-6">
+                    <div>
+                        <h3 class="text-xl font-semibold text-blue-600 mb-4 flex items-center gap-2">
+                            🧠 Mind Tools
+                        </h3>
+                        ${mindToolsHTML}
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-semibold text-indigo-600 mb-4 flex items-center gap-2">
+                            ✋ Hand Tools
+                        </h3>
+                        ${handToolsHTML}
+                    </div>
+                </div>
+            `;
+            
+            modal.classList.add('show');
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        }
+
+        function closeModalFunction() {
+            modal.classList.remove('show');
+            document.body.style.overflow = 'auto'; // Restore background scrolling
+        }
+
+        // Event listeners for modal
+        closeModal.addEventListener('click', closeModalFunction);
+        
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                closeModalFunction();
             }
-        };
+        });
+        
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && modal.classList.contains('show')) {
+                closeModalFunction();
+            }
+        });
 
         function renderProblemCards() {
             problemsContainer.innerHTML = '';
@@ -295,7 +488,6 @@
                 const associatedHandTools = problem.tools.map(tid => data.tools[tid]).filter(t => t.type === 'hand');
 
                 associatedMindTools.forEach(tool => {
-                    const hasLevels = tool.levels ? true : false;
                     mindToolsGrid.innerHTML += `
                         <div class="bg-blue-100 p-3 rounded-lg">
                             <div class="flex items-center gap-2 mb-2">
@@ -304,10 +496,9 @@
                                     <p class="font-semibold text-blue-800">${tool.name}</p>
                                     <p class="text-xs text-blue-700">${tool.description}</p>
                                 </div>
-                                ${hasLevels ? `<button class="levels-toggle text-xs bg-blue-200 hover:bg-blue-300 text-blue-800 px-2 py-1 rounded transition-colors" onclick="toggleLevels(this)">Levels</button>` : ''}
                             </div>
-                            ${hasLevels ? `
-                            <div class="levels-content hidden mt-2 space-y-1">
+                            ${tool.levels ? `
+                            <div class="mt-2 space-y-1">
                                 <div class="bg-green-50 p-2 rounded text-xs border-l-2 border-green-400">
                                     <strong class="text-green-700">Beginner:</strong> <span class="text-green-600">${tool.levels.beginner}</span>
                                 </div>
@@ -336,10 +527,7 @@
                 });
 
                 card.addEventListener('click', () => {
-                    toolContentDiv.classList.toggle('expanded');
-                    // If a card is manually toggled, the 'all expanded' state might change,
-                    // but we won't try to force it to align with the toggleAllBtn's state here
-                    // as individual toggling takes precedence for that specific card.
+                    openModal(problem);
                 });
             });
         }
@@ -371,26 +559,6 @@
 
         toggleAllBtn.addEventListener('click', () => {
             toggleAllCards(!allExpanded); // Toggle the state
-        });
-
-        levelFilter.addEventListener('click', () => {
-            const levels = ['all', 'beginner', 'intermediate', 'advanced'];
-            const currentIndex = levels.indexOf(currentLevelFilter);
-            const nextIndex = (currentIndex + 1) % levels.length;
-            currentLevelFilter = levels[nextIndex];
-            
-            levelFilter.textContent = `Show: ${currentLevelFilter.charAt(0).toUpperCase() + currentLevelFilter.slice(1)} ${currentLevelFilter === 'all' ? 'Levels' : ''}`;
-            
-            // Show/hide level content based on filter
-            const allLevelContent = document.querySelectorAll('.levels-content > div');
-            allLevelContent.forEach(levelDiv => {
-                if (currentLevelFilter === 'all') {
-                    levelDiv.style.display = 'block';
-                } else {
-                    const isTargetLevel = levelDiv.querySelector('strong').textContent.toLowerCase().includes(currentLevelFilter);
-                    levelDiv.style.display = isTargetLevel ? 'block' : 'none';
-                }
-            });
         });
 
         renderProblemCards();
