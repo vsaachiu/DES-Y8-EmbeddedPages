@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Shop App: Step-by-Step</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --accent: #27ae60; /* Business Green */
+            --bg: #f4f6f9;
+            --code-bg: #1e1e1e;
+            --text: #333;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--bg);
+            color: var(--text);
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            overflow: hidden;
+            display: flex;
+            height: 90vh;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 280px;
+            background-color: var(--primary);
+            color: white;
+            flex-shrink: 0;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar h2 {
+            padding: 20px;
+            margin: 0;
+            font-size: 1.2rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            background-color: #1a252f;
+        }
+
+        .nav-btn {
+            display: block;
+            width: 100%;
+            padding: 12px 20px;
+            background: none;
+            border: none;
+            color: #bdc3c7;
+            text-align: left;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 0.9rem;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .nav-btn:hover {
+            background-color: rgba(255,255,255,0.1);
+            color: white;
+            padding-left: 25px;
+        }
+
+        .nav-btn.active {
+            background-color: var(--accent);
+            color: white;
+            font-weight: bold;
+            border-left: 6px solid #1e8449;
+        }
+
+        /* Main Content */
+        .content {
+            flex-grow: 1;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 { color: var(--primary); margin-top: 0; border-bottom: 3px solid var(--accent); display: inline-block; padding-bottom: 5px;}
+        h2 { color: var(--primary); margin-top: 30px;}
+        h3 { color: var(--accent); margin-top: 25px; margin-bottom: 10px; font-weight: 600; }
+        
+        p, li { line-height: 1.6; color: #444; }
+
+        .step-box {
+            background: #fff;
+            border-left: 4px solid var(--accent);
+            padding: 15px;
+            margin-bottom: 20px;
+            background-color: #f8f9fa;
+        }
+
+        .console-output {
+            background-color: black;
+            color: #00ff00;
+            font-family: monospace;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+            border: 1px solid #333;
+        }
+
+        /* Code Styling */
+        pre {
+            background-color: var(--code-bg);
+            color: #d4d4d4;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        code { font-family: inherit; }
+        
+        .kw { color: #569cd6; font-weight: bold; } 
+        .type { color: #4ec9b0; } 
+        .str { color: #ce9178; } 
+        .com { color: #6a9955; font-style: italic; } 
+        .var { color: #9cdcfe; } 
+        .num { color: #b5cea8; } 
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container { flex-direction: column; height: auto; }
+            .sidebar { width: 100%; height: auto;}
+            .content { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="sidebar">
+        <h2>🛍️ Development Steps</h2>
+        <button class="nav-btn active" onclick="openTab(event, 'step1')">1. The Manager (Setup)</button>
+        <button class="nav-btn" onclick="openTab(event, 'step2')">2. Main Menu UI</button>
+        <button class="nav-btn" onclick="openTab(event, 'step3')">3. Product Class</button>
+        <button class="nav-btn" onclick="openTab(event, 'step4')">4. LABORATORY: Testing Objects</button>
+        <button class="nav-btn" onclick="openTab(event, 'step5')">5. Warehouse UI</button>
+        <button class="nav-btn" onclick="openTab(event, 'step6')">6. Wiring it Together</button>
+        <button class="nav-btn" onclick="openTab(event, 'step7')">7. Shop UI Setup</button>
+        <button class="nav-btn" onclick="openTab(event, 'step8')">8. Order Class</button>
+        <button class="nav-btn" onclick="openTab(event, 'step9')">9. Shop Logic (Buying)</button>
+        <button class="nav-btn" onclick="openTab(event, 'step10')">10. Orders Window</button>
+    </div>
+
+    <div class="content">
+
+        <div id="step1" class="tab-content active">
+            <h1>1. The Manager (Setup)</h1>
+            <p>We are building a Centralized System. One file will manage all data and windows.</p>
+            
+            <div class="step-box">
+                <strong>In NetBeans:</strong>
+                <ol>
+                    <li>File &rarr; New Project &rarr; Java Application.</li>
+                    <li><strong>Project Name:</strong> Use your name + Shop (e.g., <code>JohnDoeShop</code>).</li>
+                    <li><strong>Create Main Class:</strong> <span style="color:green">✔ CHECK THIS BOX</span>.</li>
+                </ol>
+            </div>
+            
+            <h3>Action: Prepare the Main Class</h3>
+            <p>Open <code>JohnDoeShop.java</code>. We need to create the "Placeholders" for our data and windows.</p>
+            <pre><code><span class="kw">public class</span> <span class="type">JohnDoeShop</span> {
+
+    <span class="com">// 1. STORAGE: Where we keep our data</span>
+    <span class="kw">public static</span> <span class="type">ArrayList</span>&lt;<span class="type">Product</span>&gt; inventory = <span class="kw">new</span> <span class="type">ArrayList</span>&lt;&gt;();
+    <span class="kw">public static</span> <span class="type">ArrayList</span>&lt;<span class="type">Order</span>&gt; orders = <span class="kw">new</span> <span class="type">ArrayList</span>&lt;&gt;();
+
+    <span class="com">// 2. WINDOWS: Where we keep our screens</span>
+    <span class="kw">public static</span> <span class="type">MainMenu</span> menuWindow;
+    <span class="kw">public static</span> <span class="type">WarehouseFrame</span> warehouseWindow;
+    <span class="kw">public static</span> <span class="type">ShopFrame</span> shopWindow;
+    <span class="kw">public static</span> <span class="type">OrdersFrame</span> ordersWindow;
+
+    <span class="kw">public static void</span> main(<span class="type">String</span>[] args) {
+        <span class="com">// We will fill this in Step 6!</span>
+    }
+}</code></pre>
+            <p><em>(You will see red error lines because we haven't made the other files yet. Ignore them for now!)</em></p>
+        </div>
+
+        <div id="step2" class="tab-content">
+            <h1>2. The Main Menu</h1>
+            <p>Let's make the face of the application.</p>
+
+            <h3>Action: Setup</h3>
+            <ul>
+                <li>Right-click Package &rarr; New &rarr; <strong>JFrame Form</strong>.</li>
+                <li>Name: <code>MainMenu</code>.</li>
+            </ul>
+
+            <h3>Action: Design</h3>
+            <p>Add 3 Buttons to the frame:</p>
+            <ul>
+                <li><strong>Text:</strong> "Warehouse", <strong>Variable:</strong> <code>btnWarehouse</code></li>
+                <li><strong>Text:</strong> "Shop", <strong>Variable:</strong> <code>btnShop</code></li>
+                <li><strong>Text:</strong> "Orders", <strong>Variable:</strong> <code>btnOrders</code></li>
+            </ul>
+        </div>
+
+        <div id="step3" class="tab-content">
+            <h1>3. The Product Class</h1>
+            <p>We need to define what a "Product" actually is.</p>
+
+            <h3>Action: Create Class</h3>
+            <ul>
+                <li>Right-click Package &rarr; New &rarr; <strong>Java Class</strong>.</li>
+                <li>Name: <code>Product</code>.</li>
+            </ul>
+
+            <h3>Action: The Code</h3>
+            <pre><code><span class="kw">public class</span> <span class="type">Product</span> {
+    
+    <span class="kw">private</span> <span class="type">String</span> name;
+    <span class="kw">private</span> <span class="kw">double</span> price;
+
+    <span class="kw">public</span> Product(<span class="type">String</span> name, <span class="kw">double</span> price) {
+        <span class="kw">this</span>.name = name;
+        <span class="kw">this</span>.price = price;
+    }
+
+    <span class="kw">public</span> <span class="type">String</span> getName() { <span class="kw">return</span> name; }
+    <span class="kw">public</span> <span class="kw">double</span> getPrice() { <span class="kw">return</span> price; }
+
+    <span class="kw">@Override</span>
+    <span class="kw">public</span> <span class="type">String</span> toString() {
+        <span class="kw">return</span> name + <span class="str">" ($"</span> + price + <span class="str">")"</span>;
+    }
+}</code></pre>
+        </div>
+
+        <div id="step4" class="tab-content">
+            <h1>4. LABORATORY: Testing Objects</h1>
+            <p><strong>STOP!</strong> Before we build more windows, we need to understand how to create products using code.</p>
+            
+            <h3>Action: The Experiment</h3>
+            <p>Go back to your main class: <code>JohnDoeShop.java</code>. Look at the <code>main</code> method.</p>
+            <p>Type this code inside the main method and press <strong>Run Project</strong> (Green Play Button).</p>
+
+            <pre><code><span class="kw">public static void</span> main(<span class="type">String</span>[] args) {
+
+    <span class="com">// TEST 1: Making a single object</span>
+    <span class="type">Product</span> p1 = <span class="kw">new</span> <span class="type">Product</span>(<span class="str">"Test Apple"</span>, 1.50);
+    <span class="type">System</span>.out.println(p1.toString());
+
+    <span class="com">// TEST 2: Making 100 objects with a loop!</span>
+    <span class="kw">for</span> (<span class="kw">int</span> i = 1; i &lt;= 100; i++) {
+        <span class="type">Product</span> temp = <span class="kw">new</span> <span class="type">Product</span>(<span class="str">"New Product "</span> + i, 10.00);
+        
+        <span class="com">// Add to our storage</span>
+        inventory.add(temp);
+        
+        <span class="type">System</span>.out.println(<span class="str">"Created: "</span> + temp.getName());
+    }
+    
+}</code></pre>
+
+            <h3>The Result</h3>
+            <p>Look at the Output window at the bottom of NetBeans. You should see:</p>
+            <div class="console-output">
+                Test Apple ($1.50)<br>
+                Created: New Product 1<br>
+                Created: New Product 2<br>
+                ...<br>
+                Created: New Product 100
+            </div>
+            <p><strong>Concept:</strong> We just used a loop to "Manufacture" 100 objects instantly. The computer did the hard work for us!</p>
+            <p><span style="color:red">IMPORTANT:</span> Delete or comment out this test code before moving to Step 5.</p>
+        </div>
+
+        <div id="step5" class="tab-content">
+            <h1>5. Warehouse UI</h1>
+            <p>Now let's build the window that lets users do what we just did in the console: Create Products.</p>
+
+            <h3>Action: Setup</h3>
+            <ol>
+                <li>Create New JFrame: <code>WarehouseFrame</code>.</li>
+                <li>Add Labels/TextFields for <strong>Name</strong> and <strong>Price</strong>.</li>
+                <li>Add a Button: "Add Stock".</li>
+                <li>Add a "Back to Menu" button.</li>
+            </ol>
+
+            <h3>Action: Logic (Add Stock)</h3>
+            <p>Double-click the "Add Stock" button. We will read the text, create the object, and save it to our Main Class.</p>
+            <pre><code><span class="com">// 1. Get Input</span>
+<span class="type">String</span> name = txtName.getText();
+<span class="kw">double</span> price = <span class="type">Double</span>.parseDouble(txtPrice.getText());
+
+<span class="com">// 2. Create Object</span>
+<span class="type">Product</span> p = <span class="kw">new</span> <span class="type">Product</span>(name, price);
+
+<span class="com">// 3. Save to Global Inventory</span>
+<span class="type">JohnDoeShop</span>.inventory.add(p);
+
+<span class="com">// 4. Feedback</span>
+lblMessage.setText(<span class="str">"Saved: "</span> + name);</code></pre>
+        </div>
+
+        <div id="step6" class="tab-content">
+            <h1>6. Wiring it Together</h1>
+            <p>We have a Main Class, a Menu, and a Warehouse. Let's connect them.</p>
+
+            <h3>Action: Initialize Windows</h3>
+            <p>Go back to <code>JohnDoeShop.java</code>. Update the main method to actually launch the app.</p>
+            <pre><code><span class="kw">public static void</span> main(<span class="type">String</span>[] args) {
+    
+    <span class="com">// 1. Create the windows (in memory)</span>
+    menuWindow = <span class="kw">new</span> <span class="type">MainMenu</span>();
+    warehouseWindow = <span class="kw">new</span> <span class="type">WarehouseFrame</span>();
+    
+    <span class="com">// 2. Show the menu</span>
+    menuWindow.setVisible(<span class="kw">true</span>);
+}</code></pre>
+
+            <h3>Action: Menu Navigation</h3>
+            <p>Go to <code>MainMenu.java</code>. Double click the Warehouse button:</p>
+            <pre><code><span class="com">// Hide Menu</span>
+<span class="kw">this</span>.setVisible(<span class="kw">false</span>);
+<span class="com">// Show Warehouse</span>
+<span class="type">JohnDoeShop</span>.warehouseWindow.setVisible(<span class="kw">true</span>);</code></pre>
+
+            <h3>Action: Back Button</h3>
+            <p>Go to <code>WarehouseFrame.java</code>. Double click the Back button:</p>
+            <pre><code><span class="kw">this</span>.setVisible(<span class="kw">false</span>);
+<span class="type">JohnDoeShop</span>.menuWindow.setVisible(<span class="kw">true</span>);</code></pre>
+        </div>
+
+        <div id="step7" class="tab-content">
+            <h1>7. Shop UI Setup</h1>
+            <p>This window shows the products to the customer.</p>
+
+            <h3>Action: Setup</h3>
+            <ol>
+                <li>Create New JFrame: <code>ShopFrame</code>.</li>
+                <li>Add a <code>JList</code> (to show items). Variable: <code>lstProducts</code>.</li>
+                <li>Add a Button: "Add to Cart".</li>
+                <li>Add a Button: "Back to Menu".</li>
+            </ol>
+
+            <h3>Action: Displaying Data</h3>
+            <p>We need a method that runs every time we open the window to check for <em>new</em> products.</p>
+            <p>In <code>ShopFrame</code> source:</p>
+            <pre><code><span class="kw">public void</span> updateList() {
+    <span class="type">DefaultListModel</span> model = <span class="kw">new</span> <span class="type">DefaultListModel</span>();
+    
+    <span class="com">// Loop through the global inventory</span>
+    <span class="kw">for</span> (<span class="type">Product</span> p : <span class="type">JohnDoeShop</span>.inventory) {
+        model.addElement(p);
+    }
+    
+    lstProducts.setModel(model);
+}</code></pre>
+        </div>
+
+        <div id="step8" class="tab-content">
+            <h1>8. The Order Class</h1>
+            <p>Before we can sell things, we need an object to represent a "Sale".</p>
+
+            <h3>Action: Create Class</h3>
+            <ul>
+                <li>New Java Class &rarr; <code>Order</code>.</li>
+            </ul>
+
+            <h3>Action: The Code</h3>
+            <pre><code><span class="kw">import</span> java.util.ArrayList;
+
+<span class="kw">public class</span> <span class="type">Order</span> {
+    
+    <span class="com">// An order is a list of products</span>
+    <span class="kw">private</span> <span class="type">ArrayList</span>&lt;<span class="type">Product</span>&gt; cart;
+    <span class="kw">private</span> <span class="kw">double</span> total;
+
+    <span class="kw">public</span> Order() {
+        cart = <span class="kw">new</span> <span class="type">ArrayList</span>&lt;&gt;();
+        total = 0;
+    }
+
+    <span class="kw">public void</span> addToOrder(<span class="type">Product</span> p) {
+        cart.add(p);
+        total = total + p.getPrice();
+    }
+
+    <span class="kw">@Override</span>
+    <span class="kw">public</span> <span class="type">String</span> toString() {
+        <span class="kw">return</span> <span class="str">"Items: "</span> + cart.size() + <span class="str">" - Total: $"</span> + total;
+    }
+}</code></pre>
+        </div>
+
+        <div id="step9" class="tab-content">
+            <h1>9. Shop Logic (Buying)</h1>
+            <p>Let's make the Shop functional.</p>
+
+            <h3>Action: Current Order Variable</h3>
+            <p>In <code>ShopFrame.java</code>, at the top of the class, create a temporary order.</p>
+            <pre><code><span class="kw">public class</span> <span class="type">ShopFrame</span> <span class="kw">extends</span> JFrame {
+    
+    <span class="com">// The customer's current shopping cart</span>
+    <span class="type">Order</span> myOrder = <span class="kw">new</span> <span class="type">Order</span>(); 
+
+    ...
+}</code></pre>
+
+            <h3>Action: Add to Cart Button</h3>
+            <pre><code><span class="com">// 1. Get selected index from the list</span>
+<span class="kw">int</span> index = lstProducts.getSelectedIndex();
+
+<span class="kw">if</span> (index >= 0) {
+    <span class="com">// 2. Find the product in the global inventory</span>
+    <span class="type">Product</span> selected = <span class="type">JohnDoeShop</span>.inventory.get(index);
+    
+    <span class="com">// 3. Add to our local cart</span>
+    myOrder.addToOrder(selected);
+    
+    <span class="com">// 4. Feedback</span>
+    System.out.println(<span class="str">"Added to cart: "</span> + selected.getName());
+}</code></pre>
+
+            <h3>Action: Checkout (Save Order)</h3>
+            <p>Add a "Checkout" button to the Shop Frame. When clicked:</p>
+            <pre><code><span class="com">// 1. Save the order to the Main Manager</span>
+<span class="type">JohnDoeShop</span>.orders.add(myOrder);
+
+<span class="com">// 2. Start a fresh new order for next time</span>
+myOrder = <span class="kw">new</span> <span class="type">Order</span>();
+
+<span class="type">JOptionPane</span>.showMessageDialog(<span class="kw">this</span>, <span class="str">"Order Processed!"</span>);</code></pre>
+        </div>
+
+        <div id="step10" class="tab-content">
+            <h1>10. Orders Window</h1>
+            <p>The final piece: A report for the business owner.</p>
+
+            <h3>Action: Setup</h3>
+            <ul>
+                <li>New JFrame &rarr; <code>OrdersFrame</code>.</li>
+                <li>Add a <code>JTextArea</code> (Variable: <code>txtReport</code>).</li>
+                <li>Add a "Refresh Report" button.</li>
+            </ul>
+
+            <h3>Action: Generate Report</h3>
+            <p>Loop through all the completed orders in the Manager.</p>
+            <pre><code><span class="type">String</span> report = <span class="str">"--- SALES REPORT ---\n"</span>;
+
+<span class="kw">for</span> (<span class="type">Order</span> o : <span class="type">JohnDoeShop</span>.orders) {
+    report = report + o.toString() + <span class="str">"\n"</span>;
+}
+
+txtReport.setText(report);</code></pre>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    function openTab(evt, stepName) {
+        var tabcontent = document.getElementsByClassName("tab-content");
+        for (var i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+            tabcontent[i].classList.remove("active");
+        }
+        var navbtns = document.getElementsByClassName("nav-btn");
+        for (var i = 0; i < navbtns.length; i++) {
+            navbtns[i].className = navbtns[i].className.replace(" active", "");
+        }
+        document.getElementById(stepName).style.display = "block";
+        setTimeout(function(){
+            document.getElementById(stepName).classList.add("active");
+        }, 10);
+        evt.currentTarget.className += " active";
+    }
+</script>
+
+</body>
+</html>

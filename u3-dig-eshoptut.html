@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NetBeans eShop Tutorial</title>
+    <title>My Shop App: The Complete Guide</title>
     <style>
         :root {
             --primary: #2c3e50;
-            --accent: #3498db;
+            --accent: #27ae60; /* Changed to Green for "Business" feel */
             --bg: #f4f6f9;
             --code-bg: #1e1e1e;
             --text: #333;
@@ -22,22 +22,25 @@
         }
 
         .container {
-            max-width: 1000px;
+            max-width: 1100px;
             margin: 0 auto;
             background: white;
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             overflow: hidden;
             display: flex;
-            min-height: 80vh;
+            height: 90vh; /* Fixed height for scrolling content */
         }
 
         /* Sidebar Navigation */
         .sidebar {
-            width: 250px;
+            width: 260px;
             background-color: var(--primary);
             color: white;
             flex-shrink: 0;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
         }
 
         .sidebar h2 {
@@ -45,6 +48,7 @@
             margin: 0;
             font-size: 1.2rem;
             border-bottom: 1px solid rgba(255,255,255,0.1);
+            background-color: #1a252f;
         }
 
         .nav-btn {
@@ -56,33 +60,34 @@
             color: #bdc3c7;
             text-align: left;
             cursor: pointer;
-            transition: 0.3s;
-            font-size: 1rem;
+            transition: 0.2s;
+            font-size: 0.95rem;
             border-bottom: 1px solid rgba(255,255,255,0.05);
         }
 
         .nav-btn:hover {
             background-color: rgba(255,255,255,0.1);
             color: white;
+            padding-left: 25px; /* Slide effect */
         }
 
         .nav-btn.active {
             background-color: var(--accent);
             color: white;
             font-weight: bold;
-            border-left: 5px solid white;
+            border-left: 6px solid #1e8449;
         }
 
         /* Main Content */
         .content {
             flex-grow: 1;
-            padding: 30px;
+            padding: 40px;
             overflow-y: auto;
         }
 
         .tab-content {
             display: none;
-            animation: fadeIn 0.5s;
+            animation: fadeIn 0.4s ease-in-out;
         }
 
         .tab-content.active {
@@ -90,49 +95,57 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+            from { opacity: 0; transform: translateY(5px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        h1 { color: var(--primary); margin-top: 0; }
-        h3 { color: var(--accent); border-bottom: 2px solid #eee; padding-bottom: 10px; margin-top: 30px; }
+        h1 { color: var(--primary); margin-top: 0; border-bottom: 3px solid var(--accent); display: inline-block; padding-bottom: 5px;}
+        h2 { color: var(--primary); margin-top: 30px;}
+        h3 { color: var(--accent); margin-top: 25px; margin-bottom: 10px; font-weight: 600; }
         
+        p { line-height: 1.6; color: #555; }
+
         .step-box {
             background: #fff;
             border-left: 4px solid var(--accent);
             padding: 15px;
             margin-bottom: 20px;
             background-color: #f8f9fa;
+            border-radius: 0 4px 4px 0;
         }
 
-        .note {
-            background-color: #fff3cd;
-            border: 1px solid #ffeeba;
-            color: #856404;
-            padding: 10px;
+        .important {
+            background-color: #ffeaea;
+            border-left: 4px solid #e74c3c;
+            color: #c0392b;
+            padding: 15px;
+            margin: 15px 0;
             border-radius: 4px;
-            font-size: 0.9em;
-            margin: 10px 0;
+        }
+
+        .tip {
+            background-color: #e8f6f3;
+            border-left: 4px solid var(--accent);
+            color: #145a32;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
         }
 
         /* Code Styling */
         pre {
             background-color: var(--code-bg);
             color: #d4d4d4;
-            padding: 15px;
-            border-radius: 6px;
+            padding: 20px;
+            border-radius: 8px;
             overflow-x: auto;
             font-family: 'Consolas', 'Monaco', monospace;
             font-size: 0.9rem;
             line-height: 1.5;
-            user-select: none;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            cursor: not-allowed;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
         }
 
-        code { font-family: inherit; user-select: none; }
+        code { font-family: inherit; }
         
         /* Syntax Highlighting Simulators */
         .kw { color: #569cd6; font-weight: bold; } /* Keyword */
@@ -144,8 +157,9 @@
 
         /* Responsive */
         @media (max-width: 768px) {
-            .container { flex-direction: column; }
-            .sidebar { width: 100%; }
+            .container { flex-direction: column; height: auto; }
+            .sidebar { width: 100%; height: auto;}
+            .content { padding: 20px; }
         }
     </style>
 </head>
@@ -153,121 +167,67 @@
 
 <div class="container">
     <div class="sidebar">
-        <h2>eShop Tutorial</h2>
+        <h2>🛍️ Project Guide</h2>
         <button class="nav-btn active" onclick="openTab(event, 'step1')">1. Project Setup</button>
-        <button class="nav-btn" onclick="openTab(event, 'step4')">2. Main Menu UI</button>
-        <button class="nav-btn" onclick="openTab(event, 'step2')">3. Data Model (Product)</button>
-        <button class="nav-btn" onclick="openTab(event, 'step3')">4. The Warehouse</button>
-        <button class="nav-btn" onclick="openTab(event, 'step5')">5. Warehouse Logic</button>
-        <button class="nav-btn" onclick="openTab(event, 'step6')">6. The Shop UI</button>
-        <button class="nav-btn" onclick="openTab(event, 'step7')">7. Connecting Frames</button>
-        <button class="nav-btn" onclick="openTab(event, 'concepts')">📚 Concepts</button>
+        <button class="nav-btn" onclick="openTab(event, 'step2')">2. Data: Product Class</button>
+        <button class="nav-btn" onclick="openTab(event, 'step3')">3. Data: Order Class</button>
+        <button class="nav-btn" onclick="openTab(event, 'step4')">4. The Manager (Main Class)</button>
+        <button class="nav-btn" onclick="openTab(event, 'step5')">5. UI: Warehouse Window</button>
+        <button class="nav-btn" onclick="openTab(event, 'step6')">6. UI: Shop Window</button>
+        <button class="nav-btn" onclick="openTab(event, 'step7')">7. UI: Orders Window</button>
+        <button class="nav-btn" onclick="openTab(event, 'step8')">8. UI: Main Menu</button>
+        <button class="nav-btn" onclick="openTab(event, 'concepts')">📚 Vocabulary</button>
     </div>
 
     <div class="content">
 
         <div id="step1" class="tab-content active">
-            <h1>1. Creating the Project</h1>
-            <p>Let's get the environment ready for your Dragon's Den prototype.</p>
+            <h1>1. Project Setup</h1>
+            <p>We are going to build a "Shop System" where one central file manages your data (products/orders) and your windows (GUI).</p>
             
             <div class="step-box">
-                <strong>Follow these steps in NetBeans:</strong>
+                <strong>In NetBeans:</strong>
                 <ol>
-                    <li>File &rarr; New Project</li>
-                    <li>Category: <strong>Java with Ant</strong></li>
-                    <li>Project: <strong>Java Application</strong></li>
-                    <li>Click Next</li>
-                    <li>Project Name: <code>eShopApp</code></li>
-                    <li><strong style="color:red">IMPORTANT:</strong> Uncheck "Create Main Class"</li>
-                    <li>Click Finish</li>
+                    <li>File &rarr; New Project &rarr; Java Application.</li>
+                    <li><strong>Project Name:</strong> Use your name + Shop (e.g., <code>JohnDoeShop</code>).</li>
+                    <li><strong>Create Main Class:</strong> <span style="color:green">✔ CHECK THIS BOX</span>.</li>
+                    <li>Click Finish.</li>
                 </ol>
             </div>
-            <p><em>We unchecked "Create Main Class" because we will create our own custom GUI entry point later.</em></p>
-        </div>
-
-        <div id="step4" class="tab-content">
-            <h1>2. The Main Menu (UI)</h1>
-            <p>This is the navigation hub for your app.</p>
-
-            <h3>Action: Create JFrame</h3>
-            <ul>
-                <li>Right-click Source Packages &rarr; New &rarr; <strong>JFrame Form</strong></li>
-                <li>Name: <code>MainMenu</code></li>
-                <li>Package: <code>ui</code></li>
-            </ul>
-
-            <div class="note">
-                <strong>Set as Entry Point:</strong> Right-click Project &rarr; Properties &rarr; Run. Browse and select <code>ui.MainMenu</code> as the Main Class.
+            
+            <div class="tip">
+                <strong>Why?</strong> The file <code>JohnDoeShop.java</code> will become our "Manager". It will hold the lists of products and orders, and it will be responsible for launching the windows.
             </div>
-
-            <h3>Action: Design the GUI</h3>
-            <p>Drag buttons onto the frame and rename their variables (Right-click &rarr; Change Variable Name):</p>
-            <ul>
-                <li>Button 1: <code>btnShop</code></li>
-                <li>Button 2: <code>btnWarehouse</code></li>
-                <li>Button 3: <code>btnOrders</code></li>
-            </ul>
-
-            <h3>Action: The Code (Initialize Data)</h3>
-            <p>Go to the <strong>Source</strong> tab. We need to create the Warehouse object here so it can be shared.</p>
-            <pre><code><span class="kw">public class</span> <span class="type">MainMenu</span> <span class="kw">extends</span> javax.swing.JFrame {
-
-    <span class="com">// Create the single Warehouse instance here</span>
-    <span class="kw">private</span> <span class="type">Warehouse</span> warehouse;
-
-    <span class="kw">public</span> MainMenu() {
-        initComponents();
-        <span class="com">// Initialize it!</span>
-        warehouse = <span class="kw">new</span> <span class="type">Warehouse</span>(); 
-    }
-    ...
-}</code></pre>
         </div>
 
         <div id="step2" class="tab-content">
-            <h1>3. The Product Class</h1>
-            <p>This is the foundation of everything. It defines what a "Product" actually is in our code.</p>
-
-            <div class="note">
-                <strong>What's a Class?</strong> A <strong>class</strong> is like a blueprint or template for creating objects. Think of it as a form that describes what data and actions a thing should have. The <code>Product</code> class describes what information every product in our store should have (name, price, cost, etc.).
-            </div>
+            <h1>2. The Product Class</h1>
+            <p>This defines what an item in our store looks like.</p>
 
             <h3>Action: Create the Class</h3>
             <ul>
-                <li>Right-click <strong>Source Packages</strong> &rarr; New &rarr; Java Class</li>
-                <li>Name: <code>Product</code></li>
-                <li>Package: <code>model</code></li>
+                <li>Right-click <strong>Source Packages</strong> &rarr; New &rarr; Java Class.</li>
+                <li>Name: <code>Product</code>.</li>
             </ul>
 
             <h3>Action: The Code</h3>
-            <p><strong>💡 Pro Tip:</strong> Before you type ANY code, write comments describing what each section does. This helps you think through the logic first!</p>
-            <p>Copy this logic into your file. Note how we use <code>private</code> variables for encapsulation.</p>
-            
-            <pre><code><span class="kw">package</span> model;
+            <pre><code><span class="kw">public class</span> <span class="type">Product</span> {
 
-<span class="kw">public class</span> <span class="type">Product</span> {
+    <span class="com">// 1. Data</span>
+    <span class="kw">private</span> <span class="type">String</span> name;
+    <span class="kw">private</span> <span class="kw">double</span> price;
 
-    <span class="com">// 1. Instance variables (The Data)</span>
-    <span class="kw">private</span> <span class="type">String</span> name;  <span class="com">// String = text</span>
-    <span class="kw">private</span> <span class="type">String</span> description;  <span class="com">// String = text</span>
-    <span class="kw">private</span> <span class="kw">double</span> price;  <span class="com">// double = decimal number</span>
-    <span class="kw">private</span> <span class="kw">double</span> cost;  <span class="com">// double = decimal number</span>
-
-    <span class="com">// 2. Constructor (How to build a Product)</span>
-    <span class="kw">public</span> Product(<span class="type">String</span> name, <span class="type">String</span> description, <span class="kw">double</span> price, <span class="kw">double</span> cost) {
+    <span class="com">// 2. Constructor</span>
+    <span class="kw">public</span> Product(<span class="type">String</span> name, <span class="kw">double</span> price) {
         <span class="kw">this</span>.name = name;
-        <span class="kw">this</span>.description = description;
         <span class="kw">this</span>.price = price;
-        <span class="kw">this</span>.cost = cost;
     }
 
-    <span class="com">// 3. Getters (Allowing others to read the data)</span>
+    <span class="com">// 3. Getters</span>
     <span class="kw">public</span> <span class="type">String</span> getName() { <span class="kw">return</span> name; }
-    <span class="kw">public</span> <span class="type">String</span> getDescription() { <span class="kw">return</span> description; }
     <span class="kw">public</span> <span class="kw">double</span> getPrice() { <span class="kw">return</span> price; }
-    <span class="kw">public</span> <span class="kw">double</span> getCost() { <span class="kw">return</span> cost; }
 
-    <span class="com">// 4. toString (Important for displaying in lists!)</span>
+    <span class="com">// 4. Display</span>
     <span class="kw">@Override</span>
     <span class="kw">public</span> <span class="type">String</span> toString() {
         <span class="kw">return</span> name + <span class="str">" ($"</span> + price + <span class="str">")"</span>;
@@ -276,261 +236,210 @@
         </div>
 
         <div id="step3" class="tab-content">
-            <h1>4. The Warehouse</h1>
-            <p>The Warehouse acts as the storage facility. It holds a list of all your Products.</p>
-
-            <div class="note">
-                <strong>What's an ArrayList?</strong> An <code>ArrayList</code> is a container that holds multiple items and can grow dynamically. Think of it like a flexible shopping bag that expands as you add more products. Unlike a fixed array, it automatically resizes itself.
-            </div>
+            <h1>3. The Order Class</h1>
+            <p>This defines a customer purchase. An order is basically a list of products that someone bought.</p>
 
             <h3>Action: Create the Class</h3>
             <ul>
-                <li>Right-click <code>model</code> package &rarr; New Java Class</li>
-                <li>Name: <code>Warehouse</code></li>
+                <li>Right-click <strong>Source Packages</strong> &rarr; New &rarr; Java Class.</li>
+                <li>Name: <code>Order</code>.</li>
             </ul>
 
             <h3>Action: The Code</h3>
-            <p><strong>💡 Pro Tip:</strong> Start by writing comments for what the Warehouse should do, then fill in the code beneath each comment.</p>
-            <p>We need an <code>ArrayList</code> to make our storage dynamic (expandable).</p>
+            <pre><code><span class="kw">import</span> java.util.ArrayList;
 
-            <pre><code><span class="kw">package</span> model;
-<span class="kw">import</span> java.util.ArrayList; <span class="com">// Don't forget this import!</span>
+<span class="kw">public class</span> <span class="type">Order</span> {
 
-<span class="kw">public class</span> <span class="type">Warehouse</span> {
+    <span class="kw">private</span> <span class="type">ArrayList</span>&lt;<span class="type">Product</span>&gt; items;
+    <span class="kw">private</span> <span class="kw">double</span> total = 0;
 
-    <span class="com">// The list that holds our Product objects</span>
-    <span class="kw">private</span> <span class="type">ArrayList</span>&lt;<span class="type">Product</span>&gt; products;
-
-    <span class="kw">public</span> Warehouse() {
-        products = <span class="kw">new</span> <span class="type">ArrayList</span>&lt;&gt;();
+    <span class="kw">public</span> Order() {
+        items = <span class="kw">new</span> <span class="type">ArrayList</span>&lt;&gt;();
     }
 
-    <span class="kw">public void</span> addProduct(<span class="type">Product</span> product) {
-        products.add(product);
+    <span class="kw">public void</span> addItem(<span class="type">Product</span> p) {
+        items.add(p);
+        total = total + p.getPrice();
     }
 
-    <span class="kw">public</span> <span class="type">ArrayList</span>&lt;<span class="type">Product</span>&gt; getProducts() {
-        <span class="kw">return</span> products;
+    <span class="kw">public</span> <span class="type">String</span> toString() {
+        <span class="kw">return</span> <span class="str">"Order ID: "</span> + items.hashCode() + <span class="str">" - Total: $"</span> + total;
     }
 }</code></pre>
+        </div>
+
+        <div id="step4" class="tab-content">
+            <h1>4. The Manager (Main Class)</h1>
+            <p><strong>This is the most important step.</strong> Your main file (e.g., <code>JohnDoeShop.java</code>) will hold everything together.</p>
+
+            <h3>Action: Open your Main Class</h3>
+            <p>Open the file created in Step 1. We will add our Lists (Data) and our Windows (GUI) here.</p>
+
+            <pre><code><span class="kw">import</span> java.util.ArrayList;
+
+<span class="kw">public class</span> <span class="type">JohnDoeShop</span> {
+
+    <span class="com">// --- 1. THE DATA ---</span>
+    <span class="kw">public static</span> <span class="type">ArrayList</span>&lt;<span class="type">Product</span>&gt; inventory = <span class="kw">new</span> <span class="type">ArrayList</span>&lt;&gt;();
+    <span class="kw">public static</span> <span class="type">ArrayList</span>&lt;<span class="type">Order</span>&gt; orders = <span class="kw">new</span> <span class="type">ArrayList</span>&lt;&gt;();
+
+    <span class="com">// --- 2. THE WINDOWS ---</span>
+    <span class="com">// We make them static so we can access them easily</span>
+    <span class="kw">public static</span> <span class="type">MainMenu</span> menuWindow;
+    <span class="kw">public static</span> <span class="type">WarehouseFrame</span> warehouseWindow;
+    <span class="kw">public static</span> <span class="type">ShopFrame</span> shopWindow;
+    <span class="kw">public static</span> <span class="type">OrdersFrame</span> ordersWindow;
+
+    <span class="com">// --- 3. THE START BUTTON ---</span>
+    <span class="kw">public static void</span> main(<span class="type">String</span>[] args) {
+        
+        <span class="com">// Create the windows</span>
+        menuWindow = <span class="kw">new</span> <span class="type">MainMenu</span>();
+        warehouseWindow = <span class="kw">new</span> <span class="type">WarehouseFrame</span>();
+        shopWindow = <span class="kw">new</span> <span class="type">ShopFrame</span>();
+        ordersWindow = <span class="kw">new</span> <span class="type">OrdersFrame</span>();
+
+        <span class="com">// Show the menu to start</span>
+        menuWindow.setVisible(<span class="kw">true</span>);
+    }
+}</code></pre>
+            <div class="important">
+                You will see <span style="color:red">RED ERROR LINES</span> because we haven't created the Window files (Frames) yet. That is normal! Proceed to the next step to fix them.
+            </div>
         </div>
 
         <div id="step5" class="tab-content">
-            <h1>5. Warehouse Logic</h1>
-            <p>This is the most complex part. We need to connect the UI inputs to our Java code.</p>
+            <h1>5. UI: Warehouse Window</h1>
+            <p>This window lets you add items to the <code>inventory</code> list inside your Manager class.</p>
 
-            <h3>Action: Setup Frame</h3>
+            <h3>Action: Setup</h3>
             <ol>
-                <li>Create new JFrame: <code>WarehouseFrame</code>.</li>
-                <li><strong>Design:</strong> Add TextFields (Name, Price, Cost), a Button (Add Product), and a JList (to show items).</li>
-                <li><strong>Clean Up:</strong> Delete the <code>public static void main</code> method in this file. We don't need it!</li>
+                <li>Right-click Package &rarr; New &rarr; <strong>JFrame Form</strong>.</li>
+                <li>Name: <code>WarehouseFrame</code>.</li>
+                <li>Design: Add TextFields (Name, Price) and a Button ("Add Stock").</li>
             </ol>
 
-            <h3>Action: Inject the Warehouse</h3>
-            <p>Change the constructor so it accepts the shared warehouse.</p>
-            <pre><code><span class="kw">private</span> <span class="type">Warehouse</span> warehouse;
-<span class="kw">private</span> <span class="type">DefaultListModel</span>&lt;<span class="type">String</span>&gt; listModel;
+            <h3>Action: The Logic</h3>
+            <p>Double-click the "Add Stock" button.</p>
+            <pre><code><span class="kw">private void</span> btnAddStockActionPerformed(java.awt.event.ActionEvent evt) {
+    
+    <span class="com">// 1. Get Data</span>
+    <span class="type">String</span> name = txtName.getText();
+    <span class="kw">double</span> price = <span class="type">Double</span>.parseDouble(txtPrice.getText());
 
-<span class="com">// Update Constructor to accept 'w'</span>
-<span class="kw">public</span> WarehouseFrame(<span class="type">Warehouse</span> w) {
-    initComponents();
-    <span class="kw">this</span>.warehouse = w; <span class="com">// Save the shared warehouse</span>
-    
-    <span class="com">// Setup the list display</span>
-    listModel = <span class="kw">new</span> <span class="type">DefaultListModel</span>&lt;&gt;();
-    lstWarehouseItems.setModel(listModel);
-    
-    <span class="com">// Load existing items</span>
-    <span class="kw">for</span> (<span class="type">Product</span> p : warehouse.getProducts()) {
-        listModel.addElement(p.toString());
-    }
+    <span class="com">// 2. Create Product</span>
+    <span class="type">Product</span> p = <span class="kw">new</span> <span class="type">Product</span>(name, price);
+
+    <span class="com">// 3. Add to the Manager's Inventory</span>
+    <span class="type">JohnDoeShop</span>.inventory.add(p);
+
+    <span class="com">// 4. Feedback</span>
+    lblStatus.setText(<span class="str">"Added "</span> + name);
 }</code></pre>
 
-            <h3>Action: The "Add" Button Logic</h3>
-            <p><strong>💡 Pro Tip:</strong> Write these three comments FIRST, then code beneath each one:</p>
-            <ol>
-                <li>Get data from the form</li>
-                <li>Create a new object and add it</li>
-                <li>Update the display</li>
-            </ol>
-            <p>Now add this code:</p>
-            <pre><code><span class="com">// 1. Get Text from GUI</span>
-<span class="type">String</span> name = txfName.getText();
-<span class="kw">double</span> price = <span class="type">Double</span>.parseDouble(txfPrice.getText());
-<span class="kw">double</span> cost = <span class="type">Double</span>.parseDouble(txfCost.getText());
-<span class="type">String</span> desc = txaDescription.getText();
-
-<span class="com">// 2. Create Object & Add to Warehouse</span>
-<span class="type">Product</span> p = <span class="kw">new</span> <span class="type">Product</span>(name, desc, price, cost);
-warehouse.addProduct(p);
-
-<span class="com">// 3. Update the Screen</span>
-listModel.addElement(p.toString());</code></pre>
+            <h3>Action: Back Navigation</h3>
+            <p>Add a "Back" button to return to the menu.</p>
+            <pre><code><span class="com">// Hide this, Show Menu</span>
+<span class="kw">this</span>.setVisible(<span class="kw">false</span>);
+<span class="type">JohnDoeShop</span>.menuWindow.setVisible(<span class="kw">true</span>);</code></pre>
         </div>
 
         <div id="step6" class="tab-content">
-            <h1>6. The Shop UI</h1>
-            <p>Now we build the customer-facing side. This screen reads the Warehouse data and lets a user buy items.</p>
-            
-            <h3>Action: Setup Frame</h3>
+            <h1>6. UI: Shop Window</h1>
+            <p>This window reads the inventory and creates orders.</p>
+
+            <h3>Action: Setup</h3>
             <ol>
-                <li>Create new JFrame: <code>ShopFrame</code>.</li>
-                <li><strong>Clean Up:</strong> Delete the <code>public static void main</code> method in this file.</li>
+                <li>Right-click Package &rarr; New &rarr; <strong>JFrame Form</strong>.</li>
+                <li>Name: <code>ShopFrame</code>.</li>
+                <li>Design: Add a <code>JList</code> (inventory), a Button ("Add to Cart"), and a Button ("Checkout").</li>
             </ol>
 
-            <h3>Action: Design the GUI</h3>
-            <p>Refer to your Wireframe (Screen 3) and build the following:</p>
-            <ul>
-                <li><strong>Display:</strong> Drag a <code>JList</code> to show products available. Rename to <code>lstShopItems</code>.</li>
-                <li><strong>Action:</strong> Drag a <code>JButton</code>. Text: "Add to Order". Variable: <code>btnAddOrder</code>.</li>
-                <li><strong>Feedback:</strong> Drag a large <code>JLabel</code>. Text: "Total: $0.00". Variable: <code>lblTotal</code>.</li>
-            </ul>
-
-            <h3>Action: The Code (Loading Data)</h3>
-            <p>Just like the Warehouse, we need to "Inject" the shared data and load the list.</p>
-            <pre><code><span class="kw">private</span> <span class="type">Warehouse</span> warehouse;
-<span class="kw">private</span> <span class="type">DefaultListModel</span>&lt;<span class="type">String</span>&gt; model;
-<span class="kw">private</span> <span class="kw">double</span> currentTotal = 0.0;
-
-<span class="kw">public</span> ShopFrame(<span class="type">Warehouse</span> w) {
-    initComponents();
-    <span class="kw">this</span>.warehouse = w; 
+            <h3>Action: Refresh Data</h3>
+            <p>When this window opens, we need to see the latest products. Go to <strong>Source</strong> and add a method:</p>
+            <pre><code><span class="kw">public void</span> refreshList() {
+    <span class="type">DefaultListModel</span> m = <span class="kw">new</span> <span class="type">DefaultListModel</span>();
     
-    <span class="com">// Setup list</span>
-    model = <span class="kw">new</span> <span class="type">DefaultListModel</span>&lt;&gt;();
-    lstShopItems.setModel(model);
-    
-    <span class="com">// Load products from Warehouse</span>
-    <span class="kw">for</span> (<span class="type">Product</span> p : warehouse.getProducts()) {
-        model.addElement(p.toString());
+    <span class="com">// Loop through the Manager's inventory</span>
+    <span class="kw">for</span>(<span class="type">Product</span> p : <span class="type">JohnDoeShop</span>.inventory) {
+        m.addElement(p);
     }
+    
+    myJList.setModel(m);
 }</code></pre>
 
-            <h3>Action: The "Add to Order" Button</h3>
-            <p>Double-click your button and add the logic to calculate the price.</p>
-            <pre><code><span class="com">// 1. Find out which item is selected (returns -1 if nothing selected)</span>
-<span class="kw">int</span> index = lstShopItems.getSelectedIndex();
+            <h3>Action: Checkout Logic</h3>
+            <p>When buying, we create an order and save it to the Manager.</p>
+            <pre><code><span class="com">// Create a new order</span>
+<span class="type">Order</span> newOrder = <span class="kw">new</span> <span class="type">Order</span>();
 
-<span class="kw">if</span> (index >= 0) {
-    <span class="com">// 2. Get the specific product object</span>
-    <span class="type">Product</span> p = warehouse.getProducts().get(index);
-    
-    <span class="com">// 3. Add price to total</span>
-    currentTotal = currentTotal + p.getPrice();
-    
-    <span class="com">// 4. Update the Label</span>
-    lblTotal.setText(<span class="str">"Total: $"</span> + currentTotal);
-}</code></pre>
+<span class="com">// (Logic to add selected items goes here...)</span>
+<span class="com">// Assuming you added items to 'newOrder'</span>
+
+<span class="com">// Save to Manager</span>
+<span class="type">JohnDoeShop</span>.orders.add(newOrder);</code></pre>
         </div>
 
         <div id="step7" class="tab-content">
-            <h1>7. Connecting the Screens</h1>
-            <p>Finally, make the buttons on the Main Menu actually open the Warehouse and Shop.</p>
+            <h1>7. UI: Orders Window</h1>
+            <p>This allows the business owner to see what has been sold.</p>
 
-            <h3>Action: MainMenu Button Logic</h3>
-            <p>Open <code>MainMenu.java</code>, double-click the Warehouse button, and add:</p>
-            <pre><code><span class="kw">private void</span> btnWarehouseActionPerformed(java.awt.event.ActionEvent evt) {
-    
-    <span class="com">// 1. Create the frame, PASSING the warehouse data</span>
-    <span class="type">WarehouseFrame</span> wf = <span class="kw">new</span> <span class="type">WarehouseFrame</span>(warehouse);
-    
-    <span class="com">// 2. Show it</span>
-    wf.setVisible(<span class="kw">true</span>);
-    
-    <span class="com">// 3. Hide the menu</span>
-    <span class="kw">this</span>.setVisible(<span class="kw">false</span>);
-}</code></pre>
-            
-            <p>Now, do the exact same for the <strong>Shop Button</strong>, but open <code>ShopFrame</code> instead!</p>
-            <pre><code><span class="kw">private void</span> btnShopActionPerformed(java.awt.event.ActionEvent evt) {
-    <span class="type">ShopFrame</span> sf = <span class="kw">new</span> <span class="type">ShopFrame</span>(warehouse);
-    sf.setVisible(<span class="kw">true</span>);
-    <span class="kw">this</span>.setVisible(<span class="kw">false</span>);
-}</code></pre>
+            <h3>Action: Setup</h3>
+            <ol>
+                <li>New &rarr; <strong>JFrame Form</strong> &rarr; <code>OrdersFrame</code>.</li>
+                <li>Add a <code>JTextArea</code> (to display the report).</li>
+                <li>Add a "Refresh" button.</li>
+            </ol>
+
+            <h3>Action: The Logic</h3>
+            <p>Double-click the Refresh button to read from the Manager's order list.</p>
+            <pre><code><span class="type">String</span> report = <span class="str">"--- SALES REPORT ---\n"</span>;
+
+<span class="kw">for</span> (<span class="type">Order</span> o : <span class="type">JohnDoeShop</span>.orders) {
+    report = report + o.toString() + <span class="str">"\n"</span>;
+}
+
+myTextArea.setText(report);</code></pre>
+        </div>
+
+        <div id="step8" class="tab-content">
+            <h1>8. UI: Main Menu</h1>
+            <p>Finally, let's wire up the buttons on the main screen.</p>
+
+            <h3>Action: Warehouse Button</h3>
+            <pre><code><span class="kw">this</span>.setVisible(<span class="kw">false</span>); <span class="com">// Hide menu</span>
+<span class="type">JohnDoeShop</span>.warehouseWindow.setVisible(<span class="kw">true</span>); <span class="com">// Show warehouse</span></code></pre>
+
+            <h3>Action: Shop Button</h3>
+            <pre><code><span class="kw">this</span>.setVisible(<span class="kw">false</span>);
+<span class="type">JohnDoeShop</span>.shopWindow.refreshList(); <span class="com">// Update the list first!</span>
+<span class="type">JohnDoeShop</span>.shopWindow.setVisible(<span class="kw">true</span>);</code></pre>
+
+            <h3>Action: Orders Button</h3>
+            <pre><code><span class="kw">this</span>.setVisible(<span class="kw">false</span>);
+<span class="type">JohnDoeShop</span>.ordersWindow.setVisible(<span class="kw">true</span>);</code></pre>
         </div>
 
         <div id="concepts" class="tab-content">
-            <h1>📚 Java Concepts Reference</h1>
-            <p>Here's a quick guide to all the key Java concepts used in this tutorial:</p>
-
-            <h3>Object-Oriented Programming (OOP)</h3>
+            <h1>📚 Vocabulary</h1>
+            
             <div class="step-box">
-                <strong>Class:</strong> A blueprint that defines what data and methods an object should have. Classes are used to create specific instances (objects) that follow that blueprint.
-            </div>
-            <div class="step-box">
-                <strong>Object:</strong> An actual instance of a class. For example, if <code>Product</code> is the class (blueprint), then a specific product like "Laptop ($999)" is an object.
-            </div>
-            <div class="step-box">
-                <strong>Encapsulation:</strong> Hiding internal details and only exposing what's necessary. We use <code>private</code> variables with public <code>getter</code> methods so other code can't accidentally break our data.
-            </div>
-            <div class="step-box">
-                <strong>Constructor:</strong> A special method that runs when you create a new object. It's like the setup instructions. The method name matches the class name (e.g., <code>Product(...)</code>) and takes parameters to initialize the object.
+                <strong>Static:</strong> A keyword that means "Belongs to the class, not a specific object." We used <code>static</code> in our Main class so that <code>JohnDoeShop.inventory</code> is a single, shared list that everyone can access easily.
             </div>
 
-            <h3>Data Types</h3>
             <div class="step-box">
-                <strong>String:</strong> Text data. Examples: <code>"Hello"</code>, <code>"Product Name"</code>. Always in quotes.
-            </div>
-            <div class="step-box">
-                <strong>double:</strong> A decimal number (number with decimals). Examples: <code>19.99</code>, <code>5.0</code>. Use this for prices!
-            </div>
-            <div class="step-box">
-                <strong>int:</strong> A whole number (no decimals). Examples: <code>42</code>, <code>-5</code>, <code>0</code>.
-            </div>
-            <div class="step-box">
-                <strong>boolean:</strong> True or false. Used for yes/no or on/off conditions.
+                <strong>State Management:</strong> The practice of deciding where your data lives. In this project, the "State" (Inventory and Orders) lives in the Main Class, and the Windows just "view" or "modify" that state.
             </div>
 
-            <h3>Collections & Data Structures</h3>
             <div class="step-box">
-                <strong>ArrayList:</strong> A flexible container that holds multiple objects and automatically grows or shrinks. You access items by their index (position). Syntax: <code>ArrayList&lt;Type&gt;</code> means "an ArrayList that holds Type objects."
+                <strong>Instance vs. Class:</strong> 
+                <br><em>Class:</em> The blueprint (e.g., <code>Product.java</code>).
+                <br><em>Instance:</em> The specific object (e.g., <code>Product p = new Product(...)</code>).
             </div>
+            
             <div class="step-box">
-                <strong>DefaultListModel:</strong> A Swing component that manages what appears in a GUI list. When you add items to it, they automatically show up on screen.
+                <strong>Method Call:</strong> Triggering an action. When we type <code>refreshList()</code>, we are calling a method we wrote to update the screen.
             </div>
-
-            <h3>Methods & Access</h3>
-            <div class="step-box">
-                <strong>public:</strong> Anyone can access this. Use for methods you want other classes to call.
-            </div>
-            <div class="step-box">
-                <strong>private:</strong> Only this class can access this. Use for internal data to prevent accidents.
-            </div>
-            <div class="step-box">
-                <strong>Getter:</strong> A public method that returns private data. Example: <code>getName()</code> lets others read the name without modifying it.
-            </div>
-            <div class="step-box">
-                <strong>void:</strong> A method that does something but doesn't return a value. Example: <code>addProduct()</code> adds to the warehouse but doesn't return anything.
-            </div>
-            <div class="step-box">
-                <strong>@Override:</strong> Tells Java that we're replacing a method from the parent class. For example, <code>toString()</code> is being customized.
-            </div>
-
-            <h3>Common Patterns</h3>
-            <div class="step-box">
-                <strong>Dependency Injection:</strong> Passing objects into constructors instead of creating them inside. This lets different classes share the same object. Example: passing <code>warehouse</code> into <code>WarehouseFrame</code> so it can access the same data.
-            </div>
-            <div class="step-box">
-                <strong>Model-View-Controller (MVC):</strong> Separating code into three parts: <strong>Model</strong> (data classes like Product), <strong>View</strong> (GUI like MainMenu), and <strong>Controller</strong> (logic that connects them).
-            </div>
-            <div class="step-box">
-                <strong>toString():</strong> A special method that defines how an object appears when printed or shown in a list. Make it user-friendly!
-            </div>
-
-            <h3>GUI & Events</h3>
-            <div class="step-box">
-                <strong>JFrame:</strong> A window. The top-level container for GUI components.
-            </div>
-            <div class="step-box">
-                <strong>JList:</strong> A GUI component that displays a list of items to the user.
-            </div>
-            <div class="step-box">
-                <strong>TextField:</strong> A GUI component where users can type a single line of text.
-            </div>
-            <div class="step-box">
-                <strong>Button (ActionListener):</strong> When a user clicks a button, an event is triggered. You write code in the action listener to respond to that click.
-            </div>
-
         </div>
 
     </div>
@@ -538,23 +447,24 @@ listModel.addElement(p.toString());</code></pre>
 
 <script>
     function openTab(evt, stepName) {
-        // 1. Hide all tab content
-        var i, tabcontent, navbtns;
-        tabcontent = document.getElementsByClassName("tab-content");
-        for (i = 0; i < tabcontent.length; i++) {
+        // Hide all elements with class="tab-content"
+        var tabcontent = document.getElementsByClassName("tab-content");
+        for (var i = 0; i < tabcontent.length; i++) {
             tabcontent[i].style.display = "none";
             tabcontent[i].classList.remove("active");
         }
 
-        // 2. Remove "active" class from all buttons
-        navbtns = document.getElementsByClassName("nav-btn");
-        for (i = 0; i < navbtns.length; i++) {
+        // Get all elements with class="nav-btn" and remove the class "active"
+        var navbtns = document.getElementsByClassName("nav-btn");
+        for (var i = 0; i < navbtns.length; i++) {
             navbtns[i].className = navbtns[i].className.replace(" active", "");
         }
 
-        // 3. Show the current tab and add "active" class to the button
+        // Show the current tab, and add an "active" class to the button that opened the tab
         document.getElementById(stepName).style.display = "block";
-        document.getElementById(stepName).classList.add("active");
+        setTimeout(function(){
+            document.getElementById(stepName).classList.add("active");
+        }, 10);
         evt.currentTarget.className += " active";
     }
 </script>
