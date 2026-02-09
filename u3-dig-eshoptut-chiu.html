@@ -267,12 +267,12 @@
             <pre><code><span class="kw">public static void</span> main(<span class="type">String</span>[] args) {
 
     <span class="com">// TEST 1: Making a single object</span>
-    <span class="type">Product</span> p1 = <span class="kw">new</span> <span class="type">Product</span>(<span class="str">"Test Apple"</span>, 1.50);
+    <span class="type">Product</span> p1 = <span class="kw">new</span> <span class="type">Product</span>(<span class="str">"Test Apple"</span>, 1.50, 0.75, <span class="str">"apple.jpg"</span>);
     <span class="type">System</span>.out.println(p1.toString());
 
     <span class="com">// TEST 2: Making 100 objects with a loop!</span>
     <span class="kw">for</span> (<span class="kw">int</span> i = 1; i &lt;= 100; i++) {
-        <span class="type">Product</span> temp = <span class="kw">new</span> <span class="type">Product</span>(<span class="str">"New Product "</span> + i, 10.00);
+        <span class="type">Product</span> temp = <span class="kw">new</span> <span class="type">Product</span>(<span class="str">"New Product "</span> + i, 10.00, 5.00, <span class="str">"product.jpg"</span>);
         
         <span class="com">// Add to our storage</span>
         inventory.add(temp);
@@ -302,7 +302,7 @@
             <h3>Action: Setup</h3>
             <ol>
                 <li>Create New JFrame: <code>WarehouseFrame</code>.</li>
-                <li>Add Labels/TextFields for <strong>Name</strong> and <strong>Price</strong>.</li>
+                <li>Add Labels/TextFields for <strong>Name</strong>, <strong>Price</strong>, <strong>Cost</strong>, and <strong>Image Filename</strong>.</li>
                 <li>Add a Button: "Add Stock".</li>
                 <li>Add a "Back to Menu" button.</li>
             </ol>
@@ -312,15 +312,34 @@
             <pre><code><span class="com">// 1. Get Input</span>
 <span class="type">String</span> name = txtName.getText();
 <span class="kw">double</span> price = <span class="type">Double</span>.parseDouble(txtPrice.getText());
+<span class="kw">double</span> cost = <span class="type">Double</span>.parseDouble(txtCost.getText());
+<span class="type">String</span> imageFilename = txtImageFilename.getText();
 
 <span class="com">// 2. Create Object</span>
-<span class="type">Product</span> p = <span class="kw">new</span> <span class="type">Product</span>(name, price);
+<span class="type">Product</span> p = <span class="kw">new</span> <span class="type">Product</span>(name, price, cost, imageFilename);
 
 <span class="com">// 3. Save to Global Inventory</span>
 <span class="type">JohnDoeShop</span>.inventory.add(p);
 
 <span class="com">// 4. Feedback</span>
-lblMessage.setText(<span class="str">"Saved: "</span> + name);</code></pre>
+<span class="kw">double</span> profit = price - cost;
+lblMessage.setText(<span class="str">"Saved: "</span> + name + <span class="str">" - Profit per unit: $"</span> + profit);</code></pre>
+
+            <h3>Action: Refresh Warehouse List</h3>
+            <p>Use this method in <code>WarehouseFrame</code> to reload the list from the warehouse storage.</p>
+            <pre><code><span class="com">// refreshWarehouse - refreshes by adding all products from shop warehouse into the WarehouseWindow list</span>
+<span class="kw">public void</span> refreshWarehouse(){
+    <span class="com">// make a new list model</span>
+    <span class="type">DefaultListModel</span>&lt;<span class="type">String</span>&gt; productList = <span class="kw">new</span> <span class="type">DefaultListModel</span>&lt;&gt;();
+    <span class="com">// go through the warehouse </span>
+    <span class="kw">for</span> (<span class="type">Product</span> p: <span class="type">MrChiuShop1</span>.inventory){
+        <span class="com">// for each product add it to the list model</span>
+        productList.addElement(p.name);            
+    }
+    <span class="com">// apply the list model to the listWarehouse</span>
+    listWarehouse.setModel(productList);
+}</code></pre>
+
         </div>
 
         <div id="step6" class="tab-content">
