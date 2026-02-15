@@ -408,27 +408,43 @@ lblMessage.setText(<span class="str">"Saved: "</span> + name + <span class="str"
             </ul>
 
             <h3>Action: The Code</h3>
-            <pre><code><span class="kw">import</span> java.util.ArrayList;
-
-<span class="kw">public class</span> <span class="type">Order</span> {
+            <pre><code><span class="kw">public class</span> <span class="type">Order</span> {
     
-    <span class="com">// An order is a list of products</span>
-    <span class="kw">private</span> <span class="type">ArrayList</span>&lt;<span class="type">Product</span>&gt; cart;
-    <span class="kw">private</span> <span class="kw">double</span> total;
-
-    <span class="kw">public</span> Order() {
-        cart = <span class="kw">new</span> <span class="type">ArrayList</span>&lt;&gt;();
-        total = 0;
+    <span class="com">// PROPERTIES</span>
+    <span class="com">// cart - List of items in the order</span>
+    <span class="kw">public</span> <span class="type">ArrayList</span>&lt;<span class="type">Product</span>&gt; cart;
+    <span class="com">// total - total sales price of the order</span>
+    <span class="kw">double</span> total;
+    <span class="com">// customer - Name of customer</span>
+    <span class="type">String</span> customer;
+    <span class="com">// status : 0 = order not yet placed; 1 = order placed; 2 = order delivered</span>
+    <span class="kw">int</span> status;
+    
+    <span class="com">// METHODS</span>
+    <span class="com">// Constructor</span>
+    <span class="kw">public</span> Order(){
+        <span class="com">// initialise all variables</span>
+        <span class="com">// make a empty cart</span>
+        <span class="kw">this</span>.cart = <span class="kw">new</span> <span class="type">ArrayList</span>&lt;&gt;();
+        <span class="com">// empty customer name</span>
+        <span class="kw">this</span>.customer = <span class="str">""</span>;
+        <span class="kw">this</span>.total = <span class="num">0</span>;
+        <span class="com">// status = 0</span>
+        <span class="kw">this</span>.status = <span class="num">0</span>;
+        
     }
-
-    <span class="kw">public void</span> addToOrder(<span class="type">Product</span> p) {
-        cart.add(p);
-        total = total + p.getPrice();
-    }
-
-    <span class="kw">@Override</span>
-    <span class="kw">public</span> <span class="type">String</span> toString() {
-        <span class="kw">return</span> <span class="str">"Items: "</span> + cart.size() + <span class="str">" - Total: $"</span> + total;
+    
+    <span class="com">// add up the prices of cart items and set the total amount of the order</span>
+    <span class="kw">public void</span> sumUpOrder(){
+        <span class="com">// make a subTotal variable</span>
+        <span class="kw">double</span> subTotal = <span class="num">0</span>;
+        <span class="com">// go through all items in cart</span>
+        <span class="kw">for</span> (<span class="type">Product</span> item :  <span class="kw">this</span>.cart){
+            <span class="com">// add the price to the subTotal</span>
+            subTotal = subTotal + item.price;
+        } 
+        <span class="com">// set this.total to the subTotal</span>
+        <span class="kw">this</span>.total = subTotal;
     }
 }</code></pre>
         </div>
@@ -448,18 +464,11 @@ lblMessage.setText(<span class="str">"Saved: "</span> + name + <span class="str"
 }</code></pre>
 
             <h3>Action: Add to Cart Button</h3>
-            <pre><code><span class="com">// 1. Get selected index from the list</span>
-<span class="kw">int</span> index = lstProducts.getSelectedIndex();
-
-<span class="kw">if</span> (index >= 0) {
-    <span class="com">// 2. Find the product in the global inventory</span>
-    <span class="type">Product</span> selected = <span class="type">JohnDoeShop</span>.inventory.get(index);
-    
-    <span class="com">// 3. Add to our local cart</span>
-    myOrder.addToOrder(selected);
-    
-    <span class="com">// 4. Feedback</span>
-    System.out.println(<span class="str">"Added to cart: "</span> + selected.getName());
+            <pre><code><span class="kw">private void</span> btnAddCartActionPerformed(java.awt.event.<span class="type">ActionEvent</span> evt) {                                           
+    <span class="com">// add the product to the cart</span>
+    <span class="var">myOrder</span>.cart.add(<span class="type">JohnDoeShop</span>.inventory.get(<span class="var">currentProductNumber</span>));
+    <span class="com">// refresh shop</span>
+    refreshShop();
 }</code></pre>
 
             <h3>Action: Checkout (Save Order)</h3>
